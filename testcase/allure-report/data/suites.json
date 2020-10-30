@@ -1,0 +1,35 @@
+{
+  "uid" : "98d3104e051c652961429bf95fa0b5d6",
+  "name" : "suites",
+  "children" : [ {
+    "name" : "test_player_resource",
+    "children" : [ {
+      "name" : "test_yy",
+      "uid" : "7a37cd5271ad395a",
+      "parentUid" : "5fe8315d561c2db9228a42051ab4832b",
+      "status" : "failed",
+      "time" : {
+        "start" : 1604040276034,
+        "stop" : 1604040276634,
+        "duration" : 600
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "test_xx",
+      "uid" : "2b12ec517c4ef927",
+      "parentUid" : "5fe8315d561c2db9228a42051ab4832b",
+      "status" : "passed",
+      "time" : {
+        "start" : 1604040276637,
+        "stop" : 1604040276637,
+        "duration" : 0
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "5fe8315d561c2db9228a42051ab4832b"
+  } ]
+}
