@@ -1,12 +1,13 @@
 import sys
 sys.path.append('..')
+
 from base.base import Base
 from config.url import Url
 
 
 class PlayerResource(Base):
 
-    def players_list_search(self, language='2', limit='25', loginend='-1', loginstart='-1', offset='0',
+    def players_list_search(self, language='2', limit='25', createdtend='-1', createdtstart='-1', offset='0',
                             playerid='welly', playeridexactmatch='False', sort='ASC'):
         env = Url(self.env)
         url = env.url_players_list_search()
@@ -29,15 +30,15 @@ class PlayerResource(Base):
         }
 
         params = {
-            'language': language,  # int, default value: 2
-            'limit': limit,  # int, default value: 25
-            'loginend': loginend,  # int, default value: -1
-            'loginstart': loginstart,  # int, default value: -1
-            'offset': offset,  # int, default value: 0
-            'playerid': playerid,  # String
-            # Boolean
-            'playeridexactmatch': playeridexactmatch,
-            'sort': sort,  # (String)Default value : ASC, available: ASC, DESC
+            'language': language,                       # int, default value: 2
+            'limit': limit,                             # int, default value: 25  (this is about display how
+                                                                                    #many info in one page)
+            'createdtend': createdtend,                 # int, default value: -1
+            'createdtstart': createdtstart,             # int, default value: -1
+            'offset': offset,                           # int, default value: 0
+            'playerid': playerid,                       # String
+            'playeridexactmatch': playeridexactmatch,   # Boolean
+            'sort': sort,                               # (String)Default value : ASC, available: ASC, DESC
 
             # (String)Available values : playerid, firstname, viplevel, currency, createdate, city, agentid,
             # totalavailable, totaldeposit, totalwithdraw, logintime, status, totaldepositcount, totalwithdrawcount

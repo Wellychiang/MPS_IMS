@@ -3,6 +3,7 @@ import sys
 import requests
 import pytest
 sys.path.append('..')
+
 from config.url import Url
 
 
@@ -55,6 +56,6 @@ class Base:
         }
 
         r = self.s.post(url, headers=headers, json=data)
-        # self.log.info(f'status: {r.status_code}\njson: {r.json()}')
+        self.log.info(f'status: {r.status_code}\njson: {r.json()}')
         return r.status_code, r.json()
 
