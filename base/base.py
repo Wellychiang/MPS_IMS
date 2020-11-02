@@ -15,7 +15,7 @@ class Base:
     def __init__(self, env):
 
         logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
+        logger.setLevel(logging.ERROR)
 
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s')
 

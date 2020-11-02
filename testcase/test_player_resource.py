@@ -125,7 +125,7 @@ def test_player_list_search_success_with_fuzzy_search_and_check_all_response(pla
         pytest.assume(data['statusstr'] is None)
 
         if data['playerid'] == 'wade02':
-            print(f'\nwade02\n')
+            log(f'\nwade02\n')
             pytest.assume(data['currency'] == 'CNY')
             pytest.assume(data['firstname'] == 'qweqww')
             pytest.assume(data['vipid'] == 'a582d64f-45e2-4769-94b3-2573b59279a3')
@@ -139,12 +139,12 @@ def test_player_list_search_success_with_fuzzy_search_and_check_all_response(pla
             pytest.assume(data['banksnameaccount'] == 'eyny银行 - ji3jo12123ijzxcwe')
 
         elif data['playerid'] == 'wade01':
-            print(f'\nwade01\n')
+            log(f'\nwade01\n')
             pytest.assume(data['mobile'] == '86 13131313142')
             pytest.assume(data['createdate'] == 1604287116460)
 
         elif data['playerid'] == 'wade03':
-            print(f'\nwade03\n')
+            log(f'\nwade03\n')
             pytest.assume(data['mobile'] == '86 13131313143')
             pytest.assume(data['createdate'] == 1604287141311)
 
@@ -153,7 +153,7 @@ def test_player_list_search_success_with_fuzzy_search_and_check_all_response(pla
 
     for data in response['data']:
         if data['playerid'] == 'wade01' or data['playerid'] == 'wade03':
-            print(f'\nwade01 and 03333333\n')
+            log(f'\nwade01 and 03333333\n')
             pytest.assume(data['currency'] == 'USD')
             pytest.assume(data['firstname'] is None)
             pytest.assume(data['vipid'] == '93f99682-37e9-4dbf-8805-f4061c37adae')
@@ -225,15 +225,40 @@ def test_player_list_with_null_and_wrong_languages(languages=['English', ' ', '@
 
 
 @allure.feature('Player list')
-@allure.story('Minus')
+@allure.story('Positive')
+@allure.step('')
+@pytest.mark.PlayerList
+def test_player_list_with_how_many_data_display_in_one_page(playerid=None, limits=[25, 50, 100]):
+
+    for limit in limits:
+        status_code, response = player.players_list_search(playerid=playerid, limit=limit)
+
+        pytest.assume(limit == len(response['data']))
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step('')
+@pytest.mark.PlayerList
+def test_player_list_with_how_many_data_display_in_one_page(playerid=None, limits=[25, 50, 100]):
+
+    for limit in limits:
+        status_code, response = player.players_list_search(playerid=playerid, limit=limit)
+
+        pytest.assume(limit == len(response['data']))
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
 @allure.step('')
 @pytest.mark.PlayerLis
-def test_player_list_with_how_many_data_in_one_page(playerid=None, offset=None):
-    status_code, response = player.players_list_search(offset=offset, playerid=playerid, limit=2000)
+def test_player_list_with_how_many_data_display_in_one_page(createdtstart='', createdtend='', playerid=None, switch_create=True):
 
-    print(len(response['data']))
-    # for i in response['data']:
-    #     print(f'\n{i}\n')
+    for limit in limits:
+        status_code, response = player.players_list_search(createdtstart=createdtstart, createdtend=createdtend
+                                                           playerid=playerid, switch_create=switch_create)
+
+        pytest.assume(limit == len(response['data']))
 
 
 if __name__ == '__main__':

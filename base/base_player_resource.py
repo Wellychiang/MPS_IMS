@@ -7,8 +7,9 @@ from config.url import Url
 
 class PlayerResource(Base):
 
-    def players_list_search(self, language='2', limit='25', createdtend='-1', createdtstart='-1', offset='0',
-                            playerid='welly', playeridexactmatch='False', sort='ASC'):
+    def players_list_search(self, language='2', limit='25', createdtend='-1',
+                                  createdtstart='-1', offset='0',playerid='welly',
+                                  playeridexactmatch='False', sort='ASC', switch_create=True):
         env = Url(self.env)
         url = env.url_players_list_search()
 
@@ -32,9 +33,11 @@ class PlayerResource(Base):
         params = {
             'language': language,                       # int, default value: 2
             'limit': limit,                             # int, default value: 25  (this is about display how
-                                                                                    #many info in one page)
-            'createdtend': createdtend,                 # int, default value: -1
-            'createdtstart': createdtstart,             # int, default value: -1
+                                                                                # many info diplay in one page)
+            'createdtend': createdtend,                 # int, default value: -1 (loginend == 上次登入時間的範圍)
+            'createdtstart': createdtstart,             # int, default value: -1 (loginstart == '上次登入時間的範圍)
+            'loginend': createdtend,
+            'loginstart': createdtstart,
             'offset': offset,                           # int, default value: 0
             'playerid': playerid,                       # String
             'playeridexactmatch': playeridexactmatch,   # Boolean
@@ -44,6 +47,14 @@ class PlayerResource(Base):
             # totalavailable, totaldeposit, totalwithdraw, logintime, status, totaldepositcount, totalwithdrawcount
             'sortcolumn': 'playerid'
         }
+
+        if switch_create is True:
+            params.pop('loginend')
+            params.pop('loginstart')
+
+        elif switch_create is False:
+            params.pop('createdtend')
+            params.pop('createdtstart')
 
         r = self.s.get(url, headers=headers, params=params)
         self.log.info(str(r.json()).encode("utf-8").decode("cp950", "ignore"))
