@@ -15,7 +15,7 @@ class Base:
     def __init__(self, env):
 
         logger = logging.getLogger(__name__)
-        logger.setLevel(logging.ERROR)
+        logger.setLevel(logging.INFO)
 
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s')
 
@@ -56,6 +56,6 @@ class Base:
         }
 
         r = self.s.post(url, headers=headers, json=data)
-        self.log.info(f'status: {r.status_code}\njson: {r.json()}')
+        self.log.info(f'\nstatus: {r.status_code}\nresponse: {r.json()}')
         return r.status_code, r.json()
 

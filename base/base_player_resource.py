@@ -7,9 +7,11 @@ from config.url import Url
 
 class PlayerResource(Base):
 
-    def players_list_search(self, language='2', limit='25', createdtend='-1',
-                                  createdtstart='-1', offset='0',playerid='welly',
-                                  playeridexactmatch='False', sort='ASC', switch_create=True):
+    def players_list_search(self, language='2', limit='25', createdtend='-1',createdtstart='-1', offset='0',
+                                  playerid='welly', playeridexactmatch='False', sort='ASC', sortcolumn='playerid',
+                                  firstname=None, totalavailablefrom=None, totalavailableto=None, switch_create=True,
+                                  totaldepositfrom=None, totaldepositto=None, totalwithdrawalfrom=None,
+                                  totalwithdrawalto=None):
         env = Url(self.env)
         url = env.url_players_list_search()
 
@@ -32,20 +34,23 @@ class PlayerResource(Base):
 
         params = {
             'language': language,                       # int, default value: 2
-            'limit': limit,                             # int, default value: 25  (this is about display how
-                                                                                # many info diplay in one page)
+            'limit': limit,                             # int, default value: 25  (this is about display howmany info diplay in one page)
             'createdtend': createdtend,                 # int, default value: -1 (loginend == 上次登入時間的範圍)
-            'createdtstart': createdtstart,             # int, default value: -1 (loginstart == '上次登入時間的範圍)
+            'createdtstart': createdtstart,             # int, default value: -1 (loginstart == 上次登入時間的範圍)
             'loginend': createdtend,
             'loginstart': createdtstart,
-            'offset': offset,                           # int, default value: 0
+            'offset': offset,                           # int, default value: 0 (offset=1時搜出來的資料會-1, offset+1資料就-1)
             'playerid': playerid,                       # String
             'playeridexactmatch': playeridexactmatch,   # Boolean
             'sort': sort,                               # (String)Default value : ASC, available: ASC, DESC
-
-            # (String)Available values : playerid, firstname, viplevel, currency, createdate, city, agentid,
-            # totalavailable, totaldeposit, totalwithdraw, logintime, status, totaldepositcount, totalwithdrawcount
-            'sortcolumn': 'playerid'
+            'sortcolumn': sortcolumn,
+            'totalavailablefrom': totalavailablefrom,   # 總餘額
+            'totalavailableto': totalavailableto,
+            'totaldepositfrom': totaldepositfrom,       # 總存款
+            'totaldepositto': totaldepositto,
+            'totalwithdrawalfrom': totalwithdrawalfrom, # 總提款
+            'totalwithdrawalto': totalwithdrawalto,
+            'firstname': firstname                      # 真實姓名
         }
 
         if switch_create is True:
@@ -57,7 +62,7 @@ class PlayerResource(Base):
             params.pop('createdtstart')
 
         r = self.s.get(url, headers=headers, params=params)
-        self.log.info(str(r.json()).encode("utf-8").decode("cp950", "ignore"))
+        self.log.info(f'{str(r.json()).encode("utf-8").decode("cp950", "ignore")}')
         return r.status_code, r.json()
 
 
