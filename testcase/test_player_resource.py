@@ -1,12 +1,10 @@
-import sys
 import pytest
 import allure
-
-sys.path.append('..')
 from base.base_player_resource import PlayerResource
 from pprint import pprint
 import time
 from datetime import datetime, timezone
+
 
 env = 'stg'
 
@@ -93,7 +91,7 @@ def test_login_with_null_and_error_password(username='wellyadmin', pwds=('', '  
 @allure.story('Positive')
 @allure.step('Fuzzy search with all response verify')
 @pytest.mark.PlayerList
-def test_player_list_search_success_with_fuzzy_search(playerid: 'fixedwade' = 'wade',
+def test_player_list_search_success_with_fuzzy_search(playerid: 'fixedwade' = 'wade0',
                                                       status=right_status):
     status_code, response = player.players_list_search(playerid=playerid)
 
@@ -108,7 +106,7 @@ def test_player_list_search_success_with_fuzzy_search(playerid: 'fixedwade' = 'w
     # 各不相同: mobile, createdate
     # skip: logintime
     for data in response['data']:
-        pytest.assume('wade0' in data['playerid'])
+        pytest.assume(playerid in data['playerid'])
         pytest.assume(data['lastname'] is None)
         pytest.assume(data['im1'] is None)
         pytest.assume(data['im2'] is None)
@@ -190,7 +188,7 @@ def test_player_list_search_success_with_exact_search(playerids=('wade01', 'well
 @allure.story('Positive')
 @allure.step("Verify DESC and ASC's order")
 @pytest.mark.PlayerList
-def test_player_list_search_success_with_sort(playerid='wade', sorts=('ASC', 'DESC'), status=right_status):
+def test_player_list_search_success_with_sort(playerid='wade0', sorts=('ASC', 'DESC'), status=right_status):
 
     for sort in sorts:
         status_code, response = player.players_list_search(playerid=playerid, sort=sort)
@@ -204,10 +202,12 @@ def test_player_list_search_success_with_sort(playerid='wade', sorts=('ASC', 'DE
             # DESC's sort
             pytest.assume(status_code == status)
 
-            names_num = 4
-            for num in range(3):
-                names_num -= 1
-                pytest.assume(response['data'][num]['playerid'] == f'wade0{names_num}')
+            # 以 response total 為基準, copy 出 wade 遞減時需要的數字並 + 1, 因遞減時的第一筆資料就會 -1
+            names_num = int(response['total'])
+            nums_copy_to_minus_one = names_num + 1
+            for num in range(names_num):
+                nums_copy_to_minus_one -= 1
+                pytest.assume(response['data'][num]['playerid'] == f'wade0{nums_copy_to_minus_one}')
 
 
 @allure.feature('Player list')
@@ -242,15 +242,16 @@ def test_player_list_search_success_with_limit(playerid=None, limits=(25, 50, 10
     for limit in limits:
         status_code, response = player.players_list_search(playerid=playerid, limit=limit)
 
+        log(f'{response["total"]}, {len(response["data"])}')
         pytest.assume(limit == len(response['data']))
 
 
 @allure.feature('Player list')
 @allure.story('Positive')
-@allure.step('createdtstart = 10.1, end = 11.1.23:59')
-@pytest.mark.PlayerList
-def test_player_list_search_success_with_createtime_and_logintime(createdtstart=1601510400000,
-                                                                  createdtend=1604275140000,
+@allure.step('Verify time in time block, createdtstart = 10.1, end = 11.1.23:59')
+@pytest.mark.PlayerList  # register
+def test_player_list_search_success_with_createtime_and_logintime(createdtstart=1601481600000,
+                                                                  createdtend=1606751999999,
                                                                   playerid=None,
                                                                   switch_create=True,
                                                                   status=right_status):
@@ -259,20 +260,23 @@ def test_player_list_search_success_with_createtime_and_logintime(createdtstart=
     # createdtend = int(datetime(2020, 11, 1, 23, 59, tzinfo=timezone.utc).timestamp() * 1000)
     status_code, response = player.players_list_search(createdtstart=createdtstart, createdtend=createdtend,
                                                        playerid=playerid, switch_create=switch_create)
-    pytest.assume(response['total'] == 74)
-    log(f'\n{response["total"]}')
+    pytest.assume(status_code, status)
+    pytest.assume(response['total'] == 100)
 
     status_code, response = player.players_list_search(createdtstart=createdtstart, createdtend=createdtend,
                                                        playerid=playerid, switch_create=False)
-    pytest.assume(response['total'] == 3127)
-    log(f'\n{response["total"]}')
+    # When switch_create=False, createstart will change to loginstart
+    pytest.assume(status_code, status)
+    pytest.assume(response['total'] != 100)
 
 
 @allure.feature('Player list')
 @allure.story('Positive')
 @allure.step('All search will minus one if offset equal one')
 @pytest.mark.PlayerList
-def test_player_list_search_success_with_offset(playerids=('welly', 'wade'), offset=1, status=right_status):
+def test_player_list_search_success_with_offset(playerids=('welly', 'wade'),
+                                                offset=1,
+                                                status=right_status):
 
     for playerid in playerids:
         status_code, response = player.players_list_search(playerid=playerid)
@@ -289,12 +293,16 @@ def test_player_list_search_success_with_offset(playerids=('welly', 'wade'), off
 
 @allure.feature('Player list')
 @allure.story('Positive')
-@allure.step('Just verify this single api')
+@allure.step('Choose which sortcolumns to sort')
 @pytest.mark.PlayerList
-def test_player_list_search_success_with_different_sort_column(playerid='wade', sortcolumns=('playerid', 'firstname',
-                                                                                             'viplevel', 'currency',
-                                                                                             'createdate', 'city',
-                                                                                             'agentid','totalavailable',
+def test_player_list_search_success_with_different_sort_column(playerid='wade', sortcolumns=('playerid',
+                                                                                             'firstname',
+                                                                                             'viplevel',
+                                                                                             'currency',
+                                                                                             'createdate',
+                                                                                             'city',
+                                                                                             'agentid',
+                                                                                             'totalavailable',
                                                                                              'totaldeposit',
                                                                                              'totalwithdraw',
                                                                                              'logintime',
@@ -312,33 +320,32 @@ def test_player_list_search_success_with_different_sort_column(playerid='wade', 
 
 @allure.feature('Player list')
 @allure.story('Positive')
-@allure.step('')
+@allure.step("This case contains available, deposit and withdrawl's total in a fixed time")
 @pytest.mark.PlayerList
-def test_player_list_search_success_with_total_available_from_and_to(createdtstart=1601510400000,
-                                                                     createdtend=1604275140000,
-                                                                     playerid=None, totalseriesfrom=1,
-                                                                     totalseriesto=100, status=right_status):
+def test_player_list_search_success_with_total_available_from_and_to(createdtstart=1601481600000,
+                                                                     createdtend=1606751999999,
+                                                                     playerid=None,
+                                                                     totalseriesfrom=1,
+                                                                     totalseriesto=100,
+                                                                     status=right_status):
 
     status_code, response = player.players_list_search(playerid=playerid, totalavailablefrom=totalseriesfrom,
                                                        totalavailableto=totalseriesto, createdtstart=createdtstart,
-                                                       createdtend=createdtend, switch_create=False)
-    log(f'response: {response["total"]}')
+                                                       createdtend=createdtend)
     pytest.assume(status_code, status)
-    pytest.assume(response['total'] == 12)
+    pytest.assume(response['total'] == 5)
 
     status_code, response = player.players_list_search(playerid=playerid, totaldepositfrom=totalseriesfrom,
                                                        totaldepositto=totalseriesto, createdtstart=createdtstart,
-                                                       createdtend=createdtend, switch_create=False)
-    log(f'response: {response["total"]}')
+                                                       createdtend=createdtend)
     pytest.assume(status_code, status)
-    pytest.assume(response['total'] == 12)
+    pytest.assume(response['total'] == 11)
 
     status_code, response = player.players_list_search(playerid=playerid, totalwithdrawalfrom=totalseriesfrom,
                                                        totalwithdrawalto=totalseriesto, createdtstart=createdtstart,
-                                                       createdtend=createdtend, switch_create=False)
-    log(f'response: {response["total"]}')
+                                                       createdtend=createdtend)
     pytest.assume(status_code, status)
-    pytest.assume(response['total'] == 3)
+    pytest.assume(response['total'] == 0)
 
 
 @allure.feature('Player list')
@@ -357,6 +364,241 @@ def test_player_list_search_success_with_first_name(firstnames=('welly', 'wade')
             for data in response['data']:
                 log(f'This loops firstname: {data["firstname"]}')
                 pytest.assume(firstname in data['firstname'])
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step('Agent upline and agent team search in fixed time')
+@pytest.mark.PlayerList
+def test_player_list_search_success_with_agentupline(playerid=None,
+                                                     agentidexactmatch=False,
+                                                     agentuplines=('a', 'awell', 'b'),
+                                                     status=right_status,
+                                                     createdtstart=1601510400000,
+                                                     createdtend=1604275140000,
+                                                     ):
+    # 模糊搜尋代理
+    agent_count = {}
+    for agentupline in agentuplines:
+        status_code, response = player.players_list_search(playerid=playerid,
+                                                           agentidexactmatch=agentidexactmatch,
+                                                           agentupline=agentupline,
+                                                           createdtstart=createdtstart,
+                                                           createdtend=createdtend,
+                                                           )
+        # 初始化傳入的數值 = 0, 開始計數
+        agent_count.setdefault(agentupline, 0)
+        pytest.assume(status_code == status)
+        if len(response['data']) != 0:
+            agent_count[agentupline] += 1
+            log(f'agent count: {agent_count}')
+            for data in response['data']:
+                pytest.assume(agentupline in data['agentid'])
+        else:
+            log('This is not a valid fuzzy input')
+
+    pytest.assume(agent_count['a'] and agent_count['awell'] == 1)
+    pytest.assume(agent_count['b'] == 0)
+
+    # 準確搜尋代理
+    status_code, response = player.players_list_search(playerid=playerid,
+                                                       agentidexactmatch=True,
+                                                       agentupline='awelly1')
+    if response['total'] == 1:
+        pytest.assume(status_code == status)
+        pytest.assume(response['data'][0]['agentid'] == 'awelly1')
+
+    else:
+        raise ValueError(f'Response error: total: {response["total"]}\nagentid: {response["data"][0]["agentid"]}')
+
+    # 準確和模糊搜尋代理團隊(bluecat團隊)
+    agent_lines = ('bluecat', 'b')
+    for agent_line in agent_lines:
+        if agent_line == agent_lines[1]:
+            exactmatch = False
+        else:
+            exactmatch = True
+        status_code, response = player.players_list_search(playerid=playerid,
+                                                           agentidexactmatch=exactmatch,
+                                                           agentupline=agent_line,
+                                                           ulagent=True,
+                                                           createdtstart=createdtstart,
+                                                           createdtend=1606751999999,
+                                                           switch_create=False
+                                                           )
+        log(f'exactmatch: {exactmatch}')
+        pytest.assume(status_code == status)
+        pytest.assume(response['total'] == 1)
+        pytest.assume(response['data'][0]['playerid'] == 'bcat02')
+        pytest.assume(response['data'][0]['ulagentaccount'] == 'bluecat')
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step("welly4's laodieshin upline: welly")
+@pytest.mark.PlayerList
+def test_player_list_search_success_with_affiliateupline(playerid=None,
+                                                         affiliateupline='welly',
+                                                         status=right_status):
+
+    status_code, response = player.players_list_search(playerid=playerid,
+                                                       affiliateupline=affiliateupline)
+
+    pytest.assume(status_code == status)
+    pytest.assume(response['data'][0]['playerid'] == 'welly4')
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step("Search for bank account")
+@pytest.mark.PlayerList
+def test_player_list_search_success_with_bankaccount(playerid=None,
+                                                     bankaccount=5767373481815,
+                                                     status=right_status):
+
+    status_code, response = player.players_list_search(playerid=playerid,
+                                                       bankaccount=bankaccount)
+    log(response['data'])
+    pytest.assume(status_code == status)
+    pytest.assume(response['total'] == 1)
+    pytest.assume(response['data'][0]['playerid'] == '089457')
+    pytest.assume(str(bankaccount) in response['data'][0]['banksnameaccount'])
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step("Verify the fixed status 1, 3, 4")
+@pytest.mark.PlayerList
+def test_player_list_search_success_with_status(playerid='wade', status=right_status):
+    status_code, response = player.players_list_search(playerid=playerid)
+
+    pytest.assume(status_code == status)
+
+    if len(response['data']) != 0:
+        for data in response['data']:
+            print(data['playerid'], data['status'])
+            if 'wade0' in response['playerid']:
+                pytest.assume(data['status'] == 1)
+            elif response['playerid'] == 'wade4':
+                pytest.assume(data['status'] == 3)
+            elif response['playerid'] == 'wade5':
+                pytest.assume(data['status'] == 4)
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step("Verify the fixed mobile message verification with player welly")
+@pytest.mark.PlayerList
+def test_player_list_search_success_with_mobile_and_short_message_verify(playerid=None,
+                                                                         mobile='86 13131313131',
+                                                                         status=right_status,
+                                                                         to_verify_mobile_message=(None, False, True)):
+    # None 是短信驗證篩選全部, False 是篩選沒驗證的
+    for verify_mobile in to_verify_mobile_message:
+        if verify_mobile != to_verify_mobile_message[2]:
+            status_code, response = player.players_list_search(playerid=playerid,
+                                                               mobile=mobile,
+                                                               hasverifiedmobile=verify_mobile)
+            pytest.assume(status_code == status)
+            pytest.assume(response['total'] == 1)
+            pytest.assume(response['data'][0]['playerid'] == 'welly')
+            pytest.assume(response['data'][0]['mobile'] == mobile)
+        else:
+            status_code, response = player.players_list_search(playerid=playerid,
+                                                               mobile=mobile,
+                                                               hasverifiedmobile=verify_mobile)
+            pytest.assume(status_code == status)
+            pytest.assume(response['total'] == 0)
+            pytest.assume(len(response['data']) == 0)
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step("")
+@pytest.mark.PlayerList
+def test_player_list_search_success_with_vipid(playerid=None,
+                                               vipid='e66fec49-5173-4389-9432-bb98a5f7b87f',
+                                               status=right_status):
+
+    status_code, response = player.players_list_search(playerid=playerid, vipid=vipid)
+
+    pytest.assume(status_code == status)
+
+    if len(response['data']) != 0:
+        for data in response['data']:
+            pytest.assume(data['vipid'] == vipid)
+
+    else:
+        raise ValueError('This vip id is None, plz change the other vipid')
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step("Verify the tags 'SameIP' with fixed time")
+@pytest.mark.PlayerList
+def test_player_list_search_success_with_tags(playerid=None,
+                                              createdtstart=1601481600000,
+                                              createdtend=1606751999999,
+                                              tags='6ff786bb-4901-4b17-8b89-55dc3585b4d2',
+                                              status=right_status):
+    status_code, response = player.players_list_search(playerid=playerid,
+                                                       createdtstart=createdtstart,
+                                                       createdtend=createdtend,
+                                                       tags=tags)
+
+    pytest.assume(status_code == status)
+    pytest.assume(response['total'] == 90)
+    pytest.assume(response['data'][0]['tagnames'] == 'SameIP')
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step("Verify the email with fixed time")
+@pytest.mark.PlayerList
+def test_player_list_search_success_with_tags(playerid=None,
+                                              createdtstart=1601481600000,
+                                              createdtend=1606751999999,
+                                              email='welly.chiang@nexiosoft.com',
+                                              status=right_status):
+
+    status_code, response = player.players_list_search(playerid=playerid,
+                                                       createdtstart=createdtstart,
+                                                       createdtend=createdtend,
+                                                       email=email)
+    pytest.assume(status_code == status)
+
+    for data in response['data']:
+        pytest.assume(data['email'] == email)
+
+
+@allure.feature('Player list')
+@allure.story('Positive')
+@allure.step("Verify the IM with fixed time")
+@pytest.mark.PlayerLis
+def test_player_list_search_success_with_IM1_and_2(playerid=None,
+                                                   createdtstart=1601481600000,
+                                                   createdtend=1606751999999,
+                                                   im1='im1welly',
+                                                   im2='im2welly',
+                                                   status=right_status):
+
+    status_code, response = player.players_list_search(playerid=playerid,
+                                                       createdtstart=createdtstart,
+                                                       createdtend=createdtend,
+                                                       im1=im1)
+    if response['total'] == 0:
+        raise ValueError()
+    pytest.assume(status_code == status)
+    pytest.assume(response['data'][0]['im1'] == im1)
+
+    status_code, response = player.players_list_search(playerid=playerid,
+                                                       createdtstart=createdtstart,
+                                                       createdtend=createdtend,
+                                                       im2=im2)
+    if response['total'] == 0:
+        raise ValueError()
+    pytest.assume(status_code == status)
+    pytest.assume(response['data'][0]['im2'] == im2)
 
 
 if __name__ == '__main__':

@@ -1,17 +1,38 @@
-import sys
-sys.path.append('..')
-
 from base.base import Base
 from config.url import Url
 
 
 class PlayerResource(Base):
 
-    def players_list_search(self, language='2', limit='25', createdtend='-1',createdtstart='-1', offset='0',
-                                  playerid='welly', playeridexactmatch='False', sort='ASC', sortcolumn='playerid',
-                                  firstname=None, totalavailablefrom=None, totalavailableto=None, switch_create=True,
-                                  totaldepositfrom=None, totaldepositto=None, totalwithdrawalfrom=None,
-                                  totalwithdrawalto=None):
+    def players_list_search(self, language='2',
+                            limit='25',
+                            createdtend='-1',
+                            createdtstart='-1',
+                            offset='0',
+                            playerid='welly',
+                            playeridexactmatch='False',
+                            sort='ASC',
+                            sortcolumn='playerid',
+                            firstname=None,
+                            totalavailablefrom=None,
+                            totalavailableto=None,
+                            switch_create=True,
+                            totaldepositfrom=None,
+                            totaldepositto=None,
+                            totalwithdrawalfrom=None,
+                            totalwithdrawalto=None,
+                            agentidexactmatch=None,
+                            agentupline=None,
+                            ulagent=None,
+                            affiliateupline=None,
+                            bankaccount=None,
+                            vipid=None,
+                            tags=None,
+                            mobile=None,
+                            hasverifiedmobile=None,
+                            email=None,
+                            im1=None,
+                            im2=None):
         env = Url(self.env)
         url = env.url_players_list_search()
 
@@ -34,23 +55,35 @@ class PlayerResource(Base):
 
         params = {
             'language': language,                       # int, default value: 2
-            'limit': limit,                             # int, default value: 25  (this is about display howmany info diplay in one page)
-            'createdtend': createdtend,                 # int, default value: -1 (loginend == 上次登入時間的範圍)
-            'createdtstart': createdtstart,             # int, default value: -1 (loginstart == 上次登入時間的範圍)
-            'loginend': createdtend,
+            'limit': limit,                             # 一頁要顯示的資料數
+            'createdtend': createdtend,                 # 註冊時間範圍(日期类型)
+            'createdtstart': createdtstart,
+            'loginend': createdtend,                    # 上次登入時間的範圍(日期类型)
             'loginstart': createdtstart,
-            'offset': offset,                           # int, default value: 0 (offset=1時搜出來的資料會-1, offset+1資料就-1)
-            'playerid': playerid,                       # String
-            'playeridexactmatch': playeridexactmatch,   # Boolean
+            'offset': offset,                           # offset=1, 搜尋出來的任何比數資料都會少一筆
+            'playerid': playerid,                       # username
+            'playeridexactmatch': playeridexactmatch,   # 精準搜尋與否
             'sort': sort,                               # (String)Default value : ASC, available: ASC, DESC
-            'sortcolumn': sortcolumn,
-            'totalavailablefrom': totalavailablefrom,   # 總餘額
+            'sortcolumn': sortcolumn,                   # 搜尋出來資料後的排序是以哪個參數進行sort
+            'totalavailablefrom': totalavailablefrom,   # 總餘額時間(金額類型)
             'totalavailableto': totalavailableto,
-            'totaldepositfrom': totaldepositfrom,       # 總存款
+            'totaldepositfrom': totaldepositfrom,       # 總存款時間(金額類型)
             'totaldepositto': totaldepositto,
-            'totalwithdrawalfrom': totalwithdrawalfrom, # 總提款
+            'totalwithdrawalfrom': totalwithdrawalfrom, # 總提款時間(金額類型)
             'totalwithdrawalto': totalwithdrawalto,
-            'firstname': firstname                      # 真實姓名
+            'firstname': firstname,                     # 真實姓名
+            'agentidexactmatch': agentidexactmatch,     # 代理帳號模糊搜索
+            'agentupline': agentupline,                 # 代理帳號
+            'ulagent': ulagent,                         # 代理團隊, True=代理欄位會變成成代理團隊欄位
+            'affiliateupline': affiliateupline,         # 老待新上線(沒有模糊搜尋)
+            'bankaccount': bankaccount,                 # 銀行帳號
+            'vipid': vipid,                             # 層級組別
+            'tags': tags,                               # 標籤名稱
+            'mobile': mobile,                           # 手機號碼(聯絡方式)
+            'hasverifiedmobile': hasverifiedmobile,     # 已驗證(手機號碼)
+            'email': email,                             # 電子信箱(聯絡方式)
+            'im1': im1,                                 # 會進行客製化的咚咚(聯絡方式)
+            'im2': im2                                  # 會進行客製化的咚咚(聯絡方式)
         }
 
         if switch_create is True:

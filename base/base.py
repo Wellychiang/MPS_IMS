@@ -1,9 +1,6 @@
 import logging
 import sys
 import requests
-import pytest
-sys.path.append('..')
-
 from config.url import Url
 
 
