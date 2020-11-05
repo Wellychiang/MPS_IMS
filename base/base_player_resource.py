@@ -283,7 +283,7 @@ class PlayerResource(Base):
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'same-site',
-            'User-Agent': ' Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
         }
 
         data = {
@@ -291,6 +291,8 @@ class PlayerResource(Base):
         }
 
         r = self.s.put(url, headers=headers, json=data)
+        self.log.info(f"Status code: {r.status_code}")
+        return r.status_code
 
 if __name__ == '__main__':
 

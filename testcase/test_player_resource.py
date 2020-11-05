@@ -655,9 +655,9 @@ def test_player_status_successs(username='wade6',
 
 @allure.feature('Player id')
 @allure.story('Positive')
-@allure.step("user info")
-@pytest.mark.PlayerLis
-def test_player_playerid(username='welly', status=right_status):
+@allure.step("User info compared")
+@pytest.mark.PlayerList
+def test_player_playerid(username='wade01', status=right_status):
 
     status_code, response = player.players_playerid(username)
 
@@ -668,11 +668,25 @@ def test_player_playerid(username='welly', status=right_status):
 
     with open('playerid.json', 'r') as f:
         playerid = f.read()
-
+    #
+    # with open('original_playerid.json', 'w') as f:
+    #     print(response, file=f)
+    #
     with open('original_playerid.json', 'r') as f:
         original_playerid = f.read()
-
+    #
     assert playerid.strip('\\n') == original_playerid.strip('\\n')
+
+
+@allure.feature('Player notes')
+@allure.story('Positive')
+@allure.step("user info")
+@pytest.mark.PlayerLis
+def test_player_playerid_notes(username='welly', notes='Who am i', status=put_status):
+
+    status_code = player.players_playerid_notes(username, notes)
+
+    assert status_code == status
 
 
 if __name__ == '__main__':
