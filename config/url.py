@@ -20,12 +20,17 @@ class Url:
 
     # player resource
     _players = 'players'
+    _list = '/list'
+    _status = '/status'
+    _notes = '/notes'
     _players_kick = f'{_players}/kick'
-    _players_list_search = f'{_players}/list/search'
+    _players_list_search = f'{_players}{_list}/search'
+    _players_list_lookup = f'{_players}{_list}/lookup'
 
     players = {'stg': stg + _players}
     players_kick = {'stg': stg + _players_kick}
     players_list_search = {'stg': stg + _players_list_search}
+    players_list_lookup = {'stg': stg + _players_list_lookup}
 
     def url_players_list_search(self):
         return self.players_list_search[self.env]
@@ -33,8 +38,19 @@ class Url:
     def url_players(self):
         return self.players[self.env]
 
+    def url_players_list_lookup(self):
+        return self.players_list_lookup[self.env]
+
+    def url_players_status(self, playerid):
+        return f'{self.players[self.env]}/{playerid}{self._status}'
+
     def url_players_playerid(self, playerid):
         return f'{self.players[self.env]}/{playerid}'
+
+    def url_players_playerid_notes(self, playerid):
+        return f'{self.players[self.env]}/{playerid}{self._notes}'
+
+
 
 
 

@@ -13,6 +13,7 @@ log = player.log.info
 
 right_status = 200
 wrong_status = 498
+put_status = 204
 
 # login
 replace_None = None
@@ -483,6 +484,10 @@ def test_player_list_search_success_with_status(playerid='wade', status=right_st
                 pytest.assume(data['status'] == 3)
             elif response['playerid'] == 'wade5':
                 pytest.assume(data['status'] == 4)
+            elif response['playerid'] == 'wade6':
+                pytest.assume(data['status'] == 2)
+            elif response['playerid'] == 'wade7':
+                pytest.assume(data['status'] == 0)
 
 
 @allure.feature('Player list')
@@ -574,20 +579,20 @@ def test_player_list_search_success_with_tags(playerid=None,
 @allure.feature('Player list')
 @allure.story('Positive')
 @allure.step("Verify the IM with fixed time")
-@pytest.mark.PlayerLis
-def test_player_list_search_success_with_IM1_and_2(playerid=None,
-                                                   createdtstart=1601481600000,
-                                                   createdtend=1606751999999,
-                                                   im1='im1welly',
-                                                   im2='im2welly',
-                                                   status=right_status):
+@pytest.mark.PlayerList
+def test_player_list_search_success_with_IM1_and_IM2(playerid=None,
+                                                     createdtstart=1601481600000,
+                                                     createdtend=1606751999999,
+                                                     im1='im1welly',
+                                                     im2='im2welly',
+                                                     status=right_status):
 
     status_code, response = player.players_list_search(playerid=playerid,
                                                        createdtstart=createdtstart,
                                                        createdtend=createdtend,
                                                        im1=im1)
     if response['total'] == 0:
-        raise ValueError()
+        raise ValueError(f"im1: '{im1}' is lost")
     pytest.assume(status_code == status)
     pytest.assume(response['data'][0]['im1'] == im1)
 
@@ -596,9 +601,78 @@ def test_player_list_search_success_with_IM1_and_2(playerid=None,
                                                        createdtend=createdtend,
                                                        im2=im2)
     if response['total'] == 0:
-        raise ValueError()
+        raise ValueError(f"im2: '{im2}' is lost")
     pytest.assume(status_code == status)
     pytest.assume(response['data'][0]['im2'] == im2)
+
+
+@allure.feature('Player list lookup')
+@allure.story('Positive')
+@allure.step("To register a new user, look up a similar username")
+@pytest.mark.PlayerList
+def test_player_list_lookup_success(username='welly', status=right_status):
+
+    status_code, response = player.players_list_lookup(username)
+    pytest.assume(status_code == status)
+    pytest.assume(len(response) <= 10)
+
+    for data in response:
+        pytest.assume(username in data)
+
+
+@allure.feature('Player')
+@allure.story('Positive')
+@allure.step("Register a new user")
+@pytest.mark.PlayerList
+def test_player_success(username='welly', user_num=24, status=right_status):
+
+    status_code, response = player.players(username, user_num)
+
+    while status_code == wrong_status:
+        if response['msg'] == 'the specified playerid has already been taken':
+            user_num += 1
+            status_code, response = player.players(username, user_num)
+        else:
+            raise ValueError(f'Response msg: {response["msg"]}')
+
+    pytest.assume(status_code == status)
+    pytest.assume(username in response['playerid'])
+
+
+@allure.feature('Player status')
+@allure.story('Positive')
+@allure.step("Change status")
+@pytest.mark.PlayerList
+def test_player_status_successs(username='wade6',
+                               statuses=(4, 3, 2, 0, 1),
+                               statuss=put_status):
+
+    for status in statuses:
+        status_code = player.players_status(username=username,
+                                            status=status,)
+        assert status_code == statuss
+
+
+@allure.feature('Player id')
+@allure.story('Positive')
+@allure.step("user info")
+@pytest.mark.PlayerLis
+def test_player_playerid(username='welly', status=right_status):
+
+    status_code, response = player.players_playerid(username)
+
+    pytest.assume(status_code == status)
+
+    with open('playerid.json', 'w') as f:
+        print(response, file=f)
+
+    with open('playerid.json', 'r') as f:
+        playerid = f.read()
+
+    with open('original_playerid.json', 'r') as f:
+        original_playerid = f.read()
+
+    assert playerid.strip('\\n') == original_playerid.strip('\\n')
 
 
 if __name__ == '__main__':

@@ -52,7 +52,7 @@ class Base:
             "password": pwd
         }
 
-        r = self.s.post(url, headers=headers, json=data)
+        r = self.s.post(url, headers=headers, json=data, verify=False)
         self.log.info(f'\nstatus: {r.status_code}\nresponse: {r.json()}')
         return r.status_code, r.json()
 
