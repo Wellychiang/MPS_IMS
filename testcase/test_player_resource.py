@@ -1,6 +1,7 @@
 import pytest
 import allure
 from base.base_player_resource import PlayerResource
+import json
 from pprint import pprint
 import time
 from datetime import datetime, timezone
@@ -623,7 +624,7 @@ def test_player_list_lookup_success(username='welly', status=right_status):
 @allure.feature('Player')
 @allure.story('Positive')
 @allure.step("Register a new user")
-@pytest.mark.PlayerList
+@pytest.mark.Register
 def test_player_success(username='welly', user_num=24, status=right_status):
 
     status_code, response = player.players(username, user_num)
@@ -639,54 +640,68 @@ def test_player_success(username='welly', user_num=24, status=right_status):
     pytest.assume(username in response['playerid'])
 
 
-@allure.feature('Player status')
-@allure.story('Positive')
-@allure.step("Change status")
-@pytest.mark.PlayerList
-def test_player_status_successs(username='wade6',
-                               statuses=(4, 3, 2, 0, 1),
-                               statuss=put_status):
-
-    for status in statuses:
-        status_code = player.players_status(username=username,
-                                            status=status,)
-        assert status_code == statuss
-
-
 @allure.feature('Player id')
 @allure.story('Positive')
 @allure.step("User info compared")
-@pytest.mark.PlayerList
-def test_player_playerid(username='wade01', status=right_status):
+@pytest.mark.PlayerId
+def test_player_playerid_success(username='wade01', status=right_status):
 
     status_code, response = player.players_playerid(username)
 
     pytest.assume(status_code == status)
 
-    with open('playerid.json', 'w') as f:
+    with open('compared_json/playerid.json', 'w') as f:
         print(response, file=f)
 
-    with open('playerid.json', 'r') as f:
-        playerid = f.read()
-    #
+    with open('compared_json/playerid.json', 'r') as f:
+        a = f.read().strip().split(',')
+        playerid = a
+
     # with open('original_playerid.json', 'w') as f:
     #     print(response, file=f)
-    #
-    with open('original_playerid.json', 'r') as f:
-        original_playerid = f.read()
-    #
-    assert playerid.strip('\\n') == original_playerid.strip('\\n')
+    with open('compared_json/original_playerid.json', 'r') as f:
+        # original_playerid = f.read()
+        a = f.read().strip().split(',')
+        origin = a
+
+    print(playerid)
+    assert origin == playerid
+
+
+@allure.feature('Player status')
+@allure.story('Positive')
+@allure.step("Change status")
+@pytest.mark.PlayerId
+def test_player_playerid_status_success(username='wade6',
+                                        statuses=(4, 3, 2, 0, 1),
+                                        statuss=put_status):
+
+    for status in statuses:
+        status_code = player.players_playerid_status(username=username,
+                                                     status=status,)
+        assert status_code == statuss
 
 
 @allure.feature('Player notes')
 @allure.story('Positive')
-@allure.step("user info")
-@pytest.mark.PlayerLis
-def test_player_playerid_notes(username='welly', notes='Who am i', status=put_status):
+@allure.step("User notes")
+@pytest.mark.PlayerId
+def test_player_playerid_notes_success(username='welly', notes='Who am i', status=put_status):
 
     status_code = player.players_playerid_notes(username, notes)
 
     assert status_code == status
+
+
+@allure.feature('Player ')
+@allure.story('Positive')
+@allure.step("user info")
+@pytest.mark.PlayerId
+def test_player_playerid_(username='welly', notes='Who am i', status=put_status):
+
+    status_code = player.transactions_search(username,)
+
+    pytest.assume(status_code == status)
 
 
 if __name__ == '__main__':

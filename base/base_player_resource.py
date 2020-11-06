@@ -218,29 +218,6 @@ class PlayerResource(Base):
         self.log.info(r.json())
         return r.status_code, r.json()
 
-    def players_status(self, username='welly', status=1):
-        env = Url(self.env)
-        url = env.url_players_status(username)
-        print(url)
-        _, get_token = self.login()
-
-        headers = {
-            'Authorization': get_token['token'],
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/json;charset=UTF-8',
-            'Host': 'ae-boapi.stgdevops.site',
-            'Origin': 'https://ae-bo.stgdevops.site',
-            'Referer': 'https://ae-bo.stgdevops.site/',
-        }
-
-        data = {
-            'status': status
-        }
-
-        r = self.s.put(url, headers=headers, json=data)
-        self.log.info(f"PUT's status code: {r.status_code}")
-        return r.status_code
-
     def players_playerid(self, username='welly'):
         env = Url(self.env)
         url = env.url_players_playerid(username)
@@ -264,6 +241,29 @@ class PlayerResource(Base):
 
         return r.status_code, r.json()
 
+    def players_playerid_status(self, username='welly', status=1):
+        env = Url(self.env)
+        url = env.url_players_playerid_status(username)
+        print(url)
+        _, get_token = self.login()
+
+        headers = {
+            'Authorization': get_token['token'],
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Host': 'ae-boapi.stgdevops.site',
+            'Origin': 'https://ae-bo.stgdevops.site',
+            'Referer': 'https://ae-bo.stgdevops.site/',
+        }
+
+        data = {
+            'status': status
+        }
+
+        r = self.s.put(url, headers=headers, json=data)
+        self.log.info(f"PUT's status code: {r.status_code}")
+        return r.status_code
+
     def players_playerid_notes(self, username='welly', notes='Who am i'):
         env = Url(self.env)
         url = env.url_players_playerid_notes(username)
@@ -283,7 +283,8 @@ class PlayerResource(Base):
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'same-site',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/86.0.4240.111 Safari/537.36',
         }
 
         data = {
@@ -293,6 +294,38 @@ class PlayerResource(Base):
         r = self.s.put(url, headers=headers, json=data)
         self.log.info(f"Status code: {r.status_code}")
         return r.status_code
+
+    def transactions_search(self, username='welly'):
+        env = Url(self.env)
+        url = env.url_transactions_search()
+
+        _, get_token = self.login()
+
+        headers = {
+            'Host': 'ae-boapi.stgdevops.site',
+            'Connection': 'keep-alive',
+            'Authorization': get_token['token'],
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/86.0.4240.111 Safari/537.36',
+            'Accept': '*/*',
+            'Origin': 'https://ae-bo.stgdevops.site',
+            'Sec-Fetch-Site': 'same-site',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Dest': 'empty',
+            'Referer': 'https://ae-bo.stgdevops.site/',
+            'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+        }
+        data = {
+            'limit': '25',
+            'offset': '0',
+            'sort': 'DESC',
+            'sortcolumn': 'txntime',
+            'toplayer': username,
+            'txntypes': '5',
+        }
+        r = self.s.get(url, headers=headers, data=data)
+        self.log.info(r.json())
+
 
 if __name__ == '__main__':
 

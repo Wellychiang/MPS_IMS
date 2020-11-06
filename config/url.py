@@ -41,7 +41,7 @@ class Url:
     def url_players_list_lookup(self):
         return self.players_list_lookup[self.env]
 
-    def url_players_status(self, playerid):
+    def url_players_playerid_status(self, playerid):
         return f'{self.players[self.env]}/{playerid}{self._status}'
 
     def url_players_playerid(self, playerid):
@@ -50,6 +50,14 @@ class Url:
     def url_players_playerid_notes(self, playerid):
         return f'{self.players[self.env]}/{playerid}{self._notes}'
 
+    # transactions
+    _transactions = 'transactions'
+    _transactions_search = f'{_transactions}/search'
+
+    transactions_search = {'stg': stg + _transactions_search}
+
+    def url_transactions_search(self):
+        return self.transactions_search[self.env]
 
 
 
