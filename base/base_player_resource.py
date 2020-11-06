@@ -2,6 +2,7 @@ from base.base import Base
 from config.url import Url
 
 
+# 會員列表
 class PlayerResource(Base):
 
     def players_list_search(self, language='2',
@@ -295,7 +296,17 @@ class PlayerResource(Base):
         self.log.info(f"Status code: {r.status_code}")
         return r.status_code
 
-    def transactions_search(self, username='welly'):
+    # 有重複的key: txntypes, 若是txntypes=6的話會顯示錯誤response
+    def transactions_search(self, username='welly',
+                            endtxnamt=None,
+                            endtxntime=None,
+                            starttxntime=None,
+                            limit='25',
+                            offset=0,
+                            sort='DESC',
+                            sortcolumn='txntime',
+                            starttxnamt=None,
+                            txntypes=5):
         env = Url(self.env)
         url = env.url_transactions_search()
 
@@ -315,16 +326,22 @@ class PlayerResource(Base):
             'Referer': 'https://ae-bo.stgdevops.site/',
             'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
         }
-        data = {
-            'limit': '25',
-            'offset': '0',
-            'sort': 'DESC',
-            'sortcolumn': 'txntime',
+        params = {
+            'endtxnamt': endtxnamt,
+            'endtxntime': endtxntime,
+            'limit': limit,
+            'offset': offset,
+            'sort': sort,
+            'sortcolumn': sortcolumn,
+            'starttxnamt': starttxnamt,
+            'starttxntime': starttxntime,
             'toplayer': username,
-            'txntypes': '5',
+            'txntypes': txntypes,
+            # 'txntypes': '6',
         }
-        r = self.s.get(url, headers=headers, data=data)
+        r = self.s.get(url, headers=headers, params=params)
         self.log.info(r.json())
+        return r.status_code, r.json()
 
 
 if __name__ == '__main__':

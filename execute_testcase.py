@@ -3,7 +3,7 @@ import os
 
 
 if __name__ == '__main__':
-    pytest.main(['-vvsm', 'Playerid'])
+    pytest.main(['-vvsm', 'PlayerLis'])
 
     # os.system('del /q report')
     # pytest.main(['-vvs', '--alluredir', 'report'])

@@ -50,7 +50,7 @@ class Url:
     def url_players_playerid_notes(self, playerid):
         return f'{self.players[self.env]}/{playerid}{self._notes}'
 
-    # transactions
+    # transactions, 會員列表 > 會員信息 > 人工餘額調整(搜索)
     _transactions = 'transactions'
     _transactions_search = f'{_transactions}/search'
 
