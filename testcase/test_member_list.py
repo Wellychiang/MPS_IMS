@@ -689,9 +689,9 @@ def test_player_playerid_notes_success(username='welly', notes='Who am i', statu
     assert status_code == status
 
 
-@allure.feature('Player ')
+@allure.feature('Transaction search')
 @allure.story('Positive')
-@allure.step("user info")
+@allure.step("User's info")
 @pytest.mark.Transaction
 def test_transaction_search(username='welly',
                             status=right_status,
@@ -718,6 +718,36 @@ def test_transaction_search(username='welly',
 
     assert original_transaction_search == transaction_search
 
+
+@allure.feature('Status change and verify')
+@allure.step("")
+@pytest.mark.feature
+def test_status_change_and_verify(username='welly',
+                                  change_statuses=(4, 0, 2, 3, 1),
+                                  status=right_status,):
+
+    for change_status in change_statuses:
+        status_code = player.players_playerid_status(username=username, status=change_status,)
+        if status_code == put_status:
+            status_code, response = player.players_list_search(playerid=username, playeridexactmatch=True)
+
+            if response['total'] != 0:
+                pytest.assume(status_code == status)
+                pytest.assume(response['data'][0]['playerid'] == username)
+                pytest.assume(response['data'][0]['status'] == change_status)
+            else:
+                raise ValueError('Response total should not be zero')
+        else:
+            raise ValueError('Status change API is broken')
+
+
+@allure.feature('Status change and verify')
+@allure.step("")
+@pytest.mark.feature
+def test_status_change_and_(username='welly',
+                            change_statuses=(4, 1, 2, 3, 0),
+                            status=right_status,):
+    pass
 
 if __name__ == '__main__':
     pass

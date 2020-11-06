@@ -245,7 +245,7 @@ class MemberList(Base):
     def players_playerid_status(self, username='welly', status=1):
         env = Url(self.env)
         url = env.url_players_playerid_status(username)
-        print(url)
+
         _, get_token = self.login()
 
         headers = {
@@ -342,6 +342,42 @@ class MemberList(Base):
         r = self.s.get(url, headers=headers, params=params)
         self.log.info(r.json())
         return r.status_code, r.json()
+
+    def player_wallets(self, username='welly',
+                       remarks='qq',
+                       txnamt=100,
+                       txntype='5'):
+        env = Url(self.env)
+        url = env.url_player_wallets()
+
+        _, get_token = self.login()
+
+        headers = {
+            'Host': 'ae-boapi.stgdevops.site',
+            'Connection': 'keep-alive',
+            'Content-Length': '65',
+            'Authorization': get_token['token'],
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/86.0.4240.111 Safari/537.36',
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Accept': '*/*',
+            'Origin': 'https://ae-bo.stgdevops.site',
+            'Sec-Fetch-Site': 'same-site',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Dest': 'empty',
+            'Referer': 'https://ae-bo.stgdevops.site/',
+            'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+        }
+
+        data = {
+            'remarks': remarks,
+            'toplayer': username,
+            'txnamt': txnamt,
+            'txntype': txntype,   # 6是扣, 5是加錢
+        }
+        r = self.s.put(url, headers=headers, json=data)
+        self.log.info(r.status_code)
+        return r.status_code
 
 
 if __name__ == '__main__':
