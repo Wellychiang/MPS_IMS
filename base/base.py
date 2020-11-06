@@ -16,7 +16,7 @@ class Base:
 
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s')
 
-        console_log = logging.StreamHandler(sys.stdout)
+        console_log = logging.StreamHandler()  # sys.stdout
         logger.addHandler(console_log)
 
         file_handler = logging.FileHandler(self.log_path)

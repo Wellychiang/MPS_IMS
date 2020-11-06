@@ -1,6 +1,6 @@
 import pytest
 import allure
-from base.base_player_resource import PlayerResource
+from base.base_member_list import MemberList
 import json
 from pprint import pprint
 import time
@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 env = 'stg'
 
 # 改成執行時選定環境
-player = PlayerResource(env)
+player = MemberList(env)
 log = player.log.info
 
 right_status = 200

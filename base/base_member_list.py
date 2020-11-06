@@ -3,7 +3,7 @@ from config.url import Url
 
 
 # 會員列表
-class PlayerResource(Base):
+class MemberList(Base):
 
     def players_list_search(self, language='2',
                             limit='25',
