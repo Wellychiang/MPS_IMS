@@ -276,7 +276,7 @@ def test_player_list_search_success_with_createtime_and_logintime(createdtstart=
 @allure.feature('Player list')
 @allure.story('Positive')
 @allure.step('All search will minus one if offset equal one')
-@pytest.mark.PlayerLis
+@pytest.mark.PlayerList
 def test_player_list_search_success_with_offset(playerid='wade',
                                                 offset=1,
                                                 status=right_status):
