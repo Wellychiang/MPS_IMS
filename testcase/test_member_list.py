@@ -276,14 +276,10 @@ def test_player_list_search_success_with_createtime_and_logintime(createdtstart=
 @allure.feature('Player list')
 @allure.story('Positive')
 @allure.step('All search will minus one if offset equal one')
-@pytest.mark.PlayerList
-def test_player_list_search_success_with_offset(playerids=('welly', 'wade'),
+@pytest.mark.PlayerLis
+def test_player_list_search_success_with_offset(playerid='wade',
                                                 offset=1,
                                                 status=right_status):
-
-    for playerid in playerids:
-        status_code, response = player.players_list_search(playerid=playerid)
-        origin_data_length = len(response['data'])
 
         status_code, response = player.players_list_search(playerid=playerid, offset=offset)
         offset_data_length = len(response['data'])
@@ -291,7 +287,7 @@ def test_player_list_search_success_with_offset(playerids=('welly', 'wade'),
         log(f'\norigin_data_length: {len(response["data"])}\noffset_data_length: {offset_data_length}')
 
         pytest.assume(status_code, status)
-        pytest.assume(int(origin_data_length) - 1 == int(offset_data_length))
+        assert(len(response['data']) == response['total'] - offset)
 
 
 @allure.feature('Player list')
@@ -324,7 +320,7 @@ def test_player_list_search_success_with_different_sort_column(playerid='wade', 
 @allure.feature('Player list')
 @allure.story('Positive')
 @allure.step("This case contains available, deposit and withdrawl's total in a fixed time")
-@pytest.mark.PlayerLis
+@pytest.mark.PlayerList
 def test_player_list_search_success_with_total_available_from_and_to(createdtstart=1601481600000,
                                                                      createdtend=1604246399999,
                                                                      playerid=None,
