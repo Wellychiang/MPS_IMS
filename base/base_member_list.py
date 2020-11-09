@@ -265,7 +265,7 @@ class MemberList(Base):
         self.log.info(f"PUT's status code: {r.status_code}")
         return r.status_code
 
-    def players_playerid_notes(self, username='welly', notes='Who am i'):
+    def players_playerid_notes(self, username='welly', notes=None, method='put'):
         env = Url(self.env)
         url = env.url_players_playerid_notes(username)
 
@@ -276,7 +276,7 @@ class MemberList(Base):
             'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
             'Authorization': get_token['token'],
             'Connection': 'keep-alive',
-            'Content-Length': '21',
+            # 'Content-Length': '21',
             'Content-Type': 'application/json;charset=UTF-8',
             'Host': 'ae-boapi.stgdevops.site',
             'Origin': 'https://ae-bo.stgdevops.site',
@@ -288,15 +288,32 @@ class MemberList(Base):
                           'Chrome/86.0.4240.111 Safari/537.36',
         }
 
-        data = {
-            'notes': notes
-        }
+        if method == 'get':
+            headers.pop('Content-Type')
 
-        r = self.s.put(url, headers=headers, json=data)
-        self.log.info(f"Status code: {r.status_code}")
-        return r.status_code
+            data = {
+                'limit': 16,
+                'offset': 0,
+                'sort': 'DESC',
+                'sortcolumn': 'createdate'
+            }
 
-    # 有重複的key: txntypes, 若是txntypes=6的話會顯示錯誤response
+            r = self.s.get(url, headers=headers, params=data)
+            self.log.info(f"Status code: {r.status_code}")
+
+            return r.status_code, r.json()
+
+        elif method == 'put':
+            data = {
+                'notes': notes
+            }
+
+            r = self.s.put(url, headers=headers, json=data)
+            self.log.info(f"Status code: {r.status_code}")
+
+            return r.status_code
+
+    # 有重複的key: txntypes=5是手動加錢狀態, =6是扣錢狀態, 重複出現的話會顯示錯誤response
     def transactions_search(self, username='welly',
                             endtxnamt=None,
                             endtxntime=None,
@@ -343,6 +360,7 @@ class MemberList(Base):
         self.log.info(r.json())
         return r.status_code, r.json()
 
+    # 人工餘額調整txntypes=5是手動加錢, 6是扣錢
     def player_wallets(self, username='welly',
                        remarks='qq',
                        txnamt=100,
@@ -373,7 +391,7 @@ class MemberList(Base):
             'remarks': remarks,
             'toplayer': username,
             'txnamt': txnamt,
-            'txntype': txntype,   # 6是扣, 5是加錢
+            'txntype': txntype,   # 5是加錢, 6是扣
         }
         r = self.s.put(url, headers=headers, json=data)
         self.log.info(r.status_code)

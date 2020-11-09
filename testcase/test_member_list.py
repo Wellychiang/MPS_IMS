@@ -721,7 +721,7 @@ def test_transaction_search(username='welly',
 
 @allure.feature('Status change and verify')
 @allure.step("")
-@pytest.mark.feature
+@pytest.mark.Function
 def test_status_change_and_verify(username='welly',
                                   change_statuses=(4, 0, 2, 3, 1),
                                   status=right_status,):
@@ -741,13 +741,92 @@ def test_status_change_and_verify(username='welly',
             raise ValueError('Status change API is broken')
 
 
-@allure.feature('Status change and verify')
+@allure.feature("Plus and minus wallets then call transaction's api to verify adjust records")
 @allure.step("")
-@pytest.mark.feature
-def test_status_change_and_(username='welly',
-                            change_statuses=(4, 1, 2, 3, 0),
-                            status=right_status,):
-    pass
+@pytest.mark.Function
+def test_player_wallets(username='welly',
+                        remarks='qa',
+                        txnamt=10,
+                        txntypes=(5, 6),  # 5 = plus, 6 = minus
+                        status=put_status,):
+
+    for txntype in txntypes:
+        status_code = player.player_wallets(username, remarks, txnamt, txntype)
+
+        pytest.assume(status_code == status)
+
+        status_code, response = player.transactions_search(username, txntypes=txntype)
+
+        pytest.assume(status_code == right_status)
+        pytest.assume(response['total'] == len(response['data']))
+        pytest.assume(response['data'][0]['remarks'] == remarks)
+        pytest.assume(response['data'][0]['fromuser'] == 'wellyadmin')
+
+        total_balance = 0
+        for i in range(response['total']):
+            if response['data'][i]['addbalance'] is None:
+                total_balance -= response['data'][i]['subbalance']
+                log(f'Total sub balance: {total_balance}')
+            else:
+                total_balance += response['data'][i]['addbalance']
+                log(f'Total add balance: {total_balance}')
+
+        # 5 = add, 6 = minus
+        if txntype == 5:
+
+            pytest.assume(response['data'][0]['txntype'] == txntype)
+            pytest.assume(response['data'][0]['afterbalance'] == response['data'][0]['beforebalance'] + txnamt)
+
+            for k, v in response['data'][0].items():
+                if k in ('addbalance', 'txnamt'):
+                    assert v == txnamt
+                elif k in ('firstname', 'toplayer'):
+                    assert v == username
+
+            assert response['summary']['addbalance'] == total_balance
+
+        elif txntype == 6:
+            pytest.assume(response['data'][0]['txntype'] == txntype)
+            for k, v in response['data'][0].items():
+                if k == 'txnamt':
+                    assert v == txnamt
+
+            pytest.assume(response['data'][0]['afterbalance'] == response['data'][0]['beforebalance'] - txnamt)
+            assert response['summary']['subbalance'] == -total_balance
+
+
+@allure.feature('Notes change and verify times and body')
+@allure.step("")
+@pytest.mark.Function
+def test_player_notes(username='welly',
+                        status=right_status,
+                        notes='I am welly'):
+
+    # 取得一次舊資料
+    status_code, response = player.players_playerid_notes(username, method='get')
+    original_total = response['total']
+
+    pytest.assume(status_code == status)
+    pytest.assume(response['total'] == len(response['data']))
+
+    # put 資料
+    status_code = player.players_playerid_notes(username, notes)
+
+    if status_code == put_status:
+        # 取得put後資料
+        status_code, response = player.players_playerid_notes(username, method='get')
+        new_total = response['total']
+
+        pytest.assume(status_code == status)
+        pytest.assume(response['total'] == len(response['data']))
+        pytest.assume(response['data'][0]['createby'] == 'wellyadmin')
+        pytest.assume(response['data'][0]['notes'] == notes)
+
+    else:
+        raise ValueError('Put Failed')
+
+    pytest.assume(original_total == new_total-1)
+
 
 if __name__ == '__main__':
     pass
