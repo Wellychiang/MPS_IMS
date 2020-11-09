@@ -320,7 +320,7 @@ def test_player_list_search_success_with_different_sort_column(playerid='wade', 
 @allure.feature('Player list')
 @allure.story('Positive')
 @allure.step("This case contains available, deposit and withdrawl's total in a fixed time")
-@pytest.mark.PlayerList
+@pytest.mark.n
 def test_player_list_search_success_with_total_available_from_and_to(createdtstart=1601481600000,
                                                                      createdtend=1604246399999,
                                                                      playerid=None,
@@ -338,7 +338,8 @@ def test_player_list_search_success_with_total_available_from_and_to(createdtsta
                                                        totaldepositto=totalseriesto, createdtstart=createdtstart,
                                                        createdtend=createdtend)
     pytest.assume(status_code, status)
-    pytest.assume(response['total'] == 8)
+    print(response)
+    pytest.assume(response['total'] == 7)
 
     status_code, response = player.players_list_search(playerid=playerid, totalwithdrawalfrom=totalseriesfrom,
                                                        totalwithdrawalto=totalseriesto, createdtstart=createdtstart,
@@ -741,6 +742,37 @@ def test_status_change_and_verify(username='welly',
             raise ValueError('Status change API is broken')
 
 
+@allure.feature('Notes change then verify times and context')
+@allure.step("")
+@pytest.mark.n
+def test_player_notes(username='welly',
+                      status=right_status,
+                      notes='I am welly'):
+
+    # 取得一次舊資料
+    status_code, response = player.players_playerid_notes(username, method='get')
+    original_total = response['total']
+
+    pytest.assume(status_code == status)
+
+    # put 資料
+    status_code = player.players_playerid_notes(username, notes)
+
+    if status_code == put_status:
+        # 取得put後資料
+        status_code, response = player.players_playerid_notes(username, method='get')
+        new_total = response['total']
+
+        pytest.assume(status_code == status)
+        pytest.assume(response['data'][0]['createby'] == 'wellyadmin')
+        pytest.assume(response['data'][0]['notes'] == notes)
+
+    else:
+        raise ValueError('Put Failed')
+
+    pytest.assume(original_total == new_total-1)
+
+
 @allure.feature("Plus and minus wallets then call transaction's api to verify adjust records")
 @allure.step("")
 @pytest.mark.Function
@@ -794,38 +826,6 @@ def test_player_wallets(username='welly',
             pytest.assume(response['data'][0]['afterbalance'] == response['data'][0]['beforebalance'] - txnamt)
             assert response['summary']['subbalance'] == -total_balance
 
-
-@allure.feature('Notes change and verify times and body')
-@allure.step("")
-@pytest.mark.Function
-def test_player_notes(username='welly',
-                        status=right_status,
-                        notes='I am welly'):
-
-    # 取得一次舊資料
-    status_code, response = player.players_playerid_notes(username, method='get')
-    original_total = response['total']
-
-    pytest.assume(status_code == status)
-    pytest.assume(response['total'] == len(response['data']))
-
-    # put 資料
-    status_code = player.players_playerid_notes(username, notes)
-
-    if status_code == put_status:
-        # 取得put後資料
-        status_code, response = player.players_playerid_notes(username, method='get')
-        new_total = response['total']
-
-        pytest.assume(status_code == status)
-        pytest.assume(response['total'] == len(response['data']))
-        pytest.assume(response['data'][0]['createby'] == 'wellyadmin')
-        pytest.assume(response['data'][0]['notes'] == notes)
-
-    else:
-        raise ValueError('Put Failed')
-
-    pytest.assume(original_total == new_total-1)
 
 
 if __name__ == '__main__':
