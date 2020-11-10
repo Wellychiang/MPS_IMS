@@ -101,6 +101,7 @@ class MemberList(Base):
 
         r = self.s.get(url, headers=headers, params=params)
         self.log.info(f'{str(r.json()).encode("utf-8").decode("cp950", "ignore")}')
+
         return r.status_code, r.json()
 
     def players_list_lookup(self, username='welly'):
