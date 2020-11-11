@@ -338,7 +338,6 @@ def test_player_list_search_success_with_total_available_from_and_to(createdtsta
                                                        totaldepositto=totalseriesto, createdtstart=createdtstart,
                                                        createdtend=createdtend)
     pytest.assume(status_code, status)
-    print(response)
     pytest.assume(response['total'] == 7)
 
     status_code, response = player.players_list_search(playerid=playerid, totalwithdrawalfrom=totalseriesfrom,
