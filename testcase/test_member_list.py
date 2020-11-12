@@ -320,7 +320,7 @@ def test_player_list_search_success_with_different_sort_column(playerid='wade', 
 @allure.feature('Player list')
 @allure.story('Positive')
 @allure.step("This case contains available, deposit and withdrawl's total in a fixed time")
-@pytest.mark.n
+@pytest.mark.PlayerList
 def test_player_list_search_success_with_total_available_from_and_to(createdtstart=1601481600000,
                                                                      createdtend=1604246399999,
                                                                      playerid=None,
@@ -452,7 +452,7 @@ def test_player_list_search_success_with_affiliateupline(playerid=None,
 @allure.step("Search for bank account")
 @pytest.mark.PlayerList
 def test_player_list_search_success_with_bankaccount(playerid=None,
-                                                     bankaccount=5767373481815,
+                                                     bankaccount=13131313131,
                                                      status=right_status):
 
     status_code, response = player.players_list_search(playerid=playerid,
@@ -460,7 +460,7 @@ def test_player_list_search_success_with_bankaccount(playerid=None,
     log(response['data'])
     pytest.assume(status_code == status)
     pytest.assume(response['total'] == 1)
-    pytest.assume(response['data'][0]['playerid'] == '089457')
+    pytest.assume(response['data'][0]['playerid'] == 'welly')
     pytest.assume(str(bankaccount) in response['data'][0]['banksnameaccount'])
 
 
@@ -743,7 +743,7 @@ def test_status_change_and_verify(username='welly',
 
 @allure.feature('Notes change then verify times and context')
 @allure.step("")
-@pytest.mark.n
+@pytest.mark.Function
 def test_player_notes(username='welly',
                       status=right_status,
                       notes='I am welly'):
