@@ -826,6 +826,5 @@ def test_player_wallets(username='welly',
             assert response['summary']['subbalance'] == -total_balance
 
 
-
 if __name__ == '__main__':
     pass
