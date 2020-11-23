@@ -320,7 +320,7 @@ def test_player_list_search_success_with_different_sort_column(playerid='wade', 
 @allure.feature('Player list')
 @allure.story('Positive')
 @allure.step("This case contains available, deposit and withdrawl's total in a fixed time")
-@pytest.mark.PlayerList
+@pytest.mark.skip("It's not a stable testcase")
 def test_player_list_search_success_with_total_available_from_and_to(createdtstart=1601481600000,
                                                                      createdtend=1604246399999,
                                                                      playerid=None,
