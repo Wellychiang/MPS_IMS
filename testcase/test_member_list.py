@@ -328,6 +328,8 @@ def test_player_list_search_success_with_total_available_from_and_to(createdtsta
                                                                      totalseriesto=100,
                                                                      status=right_status):
 
+    """This is not a stable case"""
+
     status_code, response = player.players_list_search(playerid=playerid, totalavailablefrom=totalseriesfrom,
                                                        totalavailableto=totalseriesto, createdtstart=createdtstart,
                                                        createdtend=createdtend)
@@ -338,7 +340,7 @@ def test_player_list_search_success_with_total_available_from_and_to(createdtsta
                                                        totaldepositto=totalseriesto, createdtstart=createdtstart,
                                                        createdtend=createdtend)
     pytest.assume(status_code, status)
-    pytest.assume(response['total'] == 7)
+    pytest.assume(response['total'] == 8)
 
     status_code, response = player.players_list_search(playerid=playerid, totalwithdrawalfrom=totalseriesfrom,
                                                        totalwithdrawalto=totalseriesto, createdtstart=createdtstart,
