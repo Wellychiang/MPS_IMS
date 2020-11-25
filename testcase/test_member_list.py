@@ -791,20 +791,10 @@ def test_player_wallets(username='welly',
         status_code, response = player.transactions_search(username, txntypes=txntype)
 
         pytest.assume(status_code == right_status)
-        pytest.assume(response['total'] == len(response['data']))
         pytest.assume(response['data'][0]['remarks'] == remarks)
         pytest.assume(response['data'][0]['fromuser'] == 'wellyadmin')
 
-        total_balance = 0
-        for i in range(response['total']):
-            if response['data'][i]['addbalance'] is None:
-                total_balance -= response['data'][i]['subbalance']
-                log(f'Total sub balance: {total_balance}')
-            else:
-                total_balance += response['data'][i]['addbalance']
-                log(f'Total add balance: {total_balance}')
-
-        # 5 = add, 6 = minus
+        # 5 = add amount, 6 = minus amount
         if txntype == 5:
 
             pytest.assume(response['data'][0]['txntype'] == txntype)
@@ -816,7 +806,6 @@ def test_player_wallets(username='welly',
                 elif k in ('firstname', 'toplayer'):
                     assert v == username
 
-            assert response['summary']['addbalance'] == total_balance
 
         elif txntype == 6:
             pytest.assume(response['data'][0]['txntype'] == txntype)
@@ -825,7 +814,6 @@ def test_player_wallets(username='welly',
                     assert v == txnamt
 
             pytest.assume(response['data'][0]['afterbalance'] == response['data'][0]['beforebalance'] - txnamt)
-            assert response['summary']['subbalance'] == -total_balance
 
 
 if __name__ == '__main__':
