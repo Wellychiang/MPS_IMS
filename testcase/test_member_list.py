@@ -1,6 +1,7 @@
 import pytest
 import allure
 from base.base_member_list import MemberList
+from base.base import Base
 import json
 from pprint import pprint
 import time
@@ -9,7 +10,8 @@ from datetime import datetime, timezone
 
 env = 'stg'
 
-# 改成執行時選定環境
+
+# 需改成執行時選定環境
 player = MemberList(env)
 log = player.log.info
 
@@ -385,8 +387,7 @@ def test_player_list_search_success_with_agentupline(playerid=None,
                                                            agentidexactmatch=agentidexactmatch,
                                                            agentupline=agentupline,
                                                            createdtstart=createdtstart,
-                                                           createdtend=createdtend,
-                                                           )
+                                                           createdtend=createdtend,)
         # 初始化傳入的數值 = 0, 開始計數
         agent_count.setdefault(agentupline, 0)
         pytest.assume(status_code == status)
@@ -414,6 +415,12 @@ def test_player_list_search_success_with_agentupline(playerid=None,
 
     # 準確和模糊搜尋代理團隊(bluecat團隊)
     agent_lines = ('bluecat', 'b')
+    month = time.strftime('%m')
+    day = time.strftime('%d')
+    start_time, end_time = Base().start_and_end_time(start_m=month,
+                                                     start_d=day,
+                                                     end_m=month,
+                                                     end_d=day)
     for agent_line in agent_lines:
         if agent_line == agent_lines[1]:
             exactmatch = False
@@ -424,9 +431,8 @@ def test_player_list_search_success_with_agentupline(playerid=None,
                                                            agentupline=agent_line,
                                                            ulagent=True,
                                                            createdtstart=createdtstart,
-                                                           createdtend=1606751999999,
-                                                           switch_create=False
-                                                           )
+                                                           createdtend=end_time,
+                                                           switch_create=False)
         log(f'exactmatch: {exactmatch}')
         pytest.assume(status_code == status)
         pytest.assume(response['total'] == 1)
