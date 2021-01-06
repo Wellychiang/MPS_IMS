@@ -1,72 +1,70 @@
-class Url:
+class ImsUrl:
 
-    def __init__(self, env):
+    def __init__(self, env='stg'):
         self.env = env
 
-    stg = 'https://ae-boapi.stgdevops.site/ae-ims/api/v1/'
-    uat = ''
+        base = f'https://ae-boapi.{env}devops.site/ae-ims/api/v1/'
 
-    _login = 'login'
-    login = {'stg': stg + _login}
+        login = 'login'
+        ads = 'ads'
+        
+        self.login = base + login
+        self.ads = base + ads
+        
+        # Player resource
+        players = 'players/'
+        status = 'status'
+        notes = 'notes'
+        transactions = 'transactions/'
+        player_wallets = 'playerwallets/'
+        
+        kick = 'kick'
+        manualbalance = 'manualbalance'
+        list = 'list/'
+        search = 'search'
+        
+        lookup = 'lookup'
+
+        self.status = status
+        self.players = base + players
+        self.notes = notes
+        self.players_kick = base + players + kick
+        self.player_wallets = base + player_wallets + manualbalance
+        self.players_list_search = base + players + list + search
+        self.players_list_lookup =  base + players + list + lookup
+        self.transactions_search = base + transactions + search
+        
 
     def url_login(self):
-        return self.login[self.env]
-
-    # ads
-    _ads = 'ads'
-    ads = {'stg': stg + _ads}
+        return self.login
 
     def url_ads(self):
-        return self.ads[self.env]
+        return self.ads
 
-    # player resource
-    _players = 'players'
-    _list = '/list'
-    _status = '/status'
-    _notes = '/notes'
-    _transactions = 'transactions'
-    _players_kick = f'{_players}/kick'
-    _player_wallets = 'playerwallets/manualbalance'
-    _players_list_search = f'{_players}{_list}/search'
-    _players_list_lookup = f'{_players}{_list}/lookup'
-    _transactions_search = f'{_transactions}/search'
-
-    players = {'stg': stg + _players,
-               'uat': uat + _players}
-    players_kick = {'stg': stg + _players_kick,
-                    'uat': uat + _players_kick}
-    player_wallets = {'stg': stg + _player_wallets,
-                      'uat': uat + _player_wallets}
-    players_list_search = {'stg': stg + _players_list_search,
-                           'uat': uat + _players_list_search}
-    players_list_lookup = {'stg': stg + _players_list_lookup,
-                           'uat': uat + _players_list_lookup}
-    transactions_search = {'stg': stg + _transactions_search,
-                           'uat': uat + _transactions_search}  # 會員信息>人工餘額調整(搜索
-
+    # Player resources
     def url_players_list_search(self):
-        return self.players_list_search[self.env]
+        return self.players_list_search
 
     def url_players(self):
-        return self.players[self.env]
+        return self.players
 
     def url_players_list_lookup(self):
-        return self.players_list_lookup[self.env]
+        return self.players_list_lookup
 
     def url_players_playerid_status(self, playerid):
-        return f'{self.players[self.env]}/{playerid}{self._status}'
+        return f'{self.players}{playerid}/{self.status}'
 
     def url_players_playerid(self, playerid):
-        return f'{self.players[self.env]}/{playerid}'
+        return f'{self.players}{playerid}'
 
     def url_players_playerid_notes(self, playerid):
-        return f'{self.players[self.env]}/{playerid}{self._notes}'
+        return f'{self.players}{playerid}/{self.notes}'
 
     def url_transactions_search(self):
-        return self.transactions_search[self.env]
+        return self.transactions_search
 
     def url_player_wallets(self):
-        return self.player_wallets[self.env]
+        return self.player_wallets
 
 
 

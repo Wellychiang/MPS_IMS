@@ -1,19 +1,13 @@
-import pytest
-import allure
-from base.base_member_list import MemberList
-from base.base import Base
-import json
-from pprint import pprint
+from . import pytest
+from . import allure
+from . import player
+from . import log
+from . import base
 import time
-from datetime import datetime, timezone
-
 
 env = 'stg'
 
-
 # 需改成執行時選定環境
-player = MemberList(env)
-log = player.log.info
 
 right_status = 200
 wrong_status = 498
@@ -28,7 +22,7 @@ replace_None = None
 @allure.step('')
 @pytest.mark.Login
 def test_login_success(username='wellyadmin', status=right_status):
-    status_code, response = player.login(username)
+    status_code, response = player.ims_login(username)
 
     pytest.assume(status_code == status)
     pytest.assume(response['needactivation'] is False)
@@ -43,7 +37,7 @@ def test_login_success(username='wellyadmin', status=right_status):
 @pytest.mark.Login
 def test_login_with_null_username_and_password(username='', pwd='', status=wrong_status):
 
-    status_code, response = player.login(username, pwd)
+    status_code, response = player.ims_login(username, pwd)
     pytest.assume(status_code == status)
     pytest.assume(response['code'] == 0)
     pytest.assume(response['msg'] == 'userid is not provided')
@@ -56,7 +50,7 @@ def test_login_with_null_username_and_password(username='', pwd='', status=wrong
 @pytest.mark.Login
 def test_login_with_null_and_error_username(usernames=('', '  ', '!@#', '我的天', str('w' * 60)), status=wrong_status):
     for username in usernames:
-        status_code, response = player.login(username)
+        status_code, response = player.ims_login(username)
         if username == usernames[0]:
             pytest.assume(status_code == status)
             pytest.assume(response['code'] == 0)
@@ -77,7 +71,7 @@ def test_login_with_null_and_error_username(usernames=('', '  ', '!@#', '我的�
 def test_login_with_null_and_error_password(username='wellyadmin', pwds=('', '  ', '!@#', '我的天', str('w' * 60)),
                                             status=wrong_status):
     for pwd in pwds:
-        status_code, response = player.login(username, pwd)
+        status_code, response = player.ims_login(username, pwd)
 
         if pwd == pwds[0]:
             pytest.assume(status_code == status)
@@ -417,7 +411,7 @@ def test_player_list_search_success_with_agentupline(playerid=None,
     agent_lines = ('bluecat', 'b')
     month = time.strftime('%m')
     day = time.strftime('%d')
-    start_time, end_time = Base().start_and_end_time(start_m=month,
+    start_time, end_time = base.start_and_end_time(start_m=month,
                                                      start_d=day,
                                                      end_m=month,
                                                      end_d=day)

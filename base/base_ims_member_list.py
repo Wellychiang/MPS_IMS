@@ -1,5 +1,6 @@
 from base.base import Base
-from config.url import Url
+from . import ims
+from . import log
 
 
 # 會員列表
@@ -36,10 +37,10 @@ class MemberList(Base):
                             im2=None,
                             dl=None,
                             lan=None):
-        env = Url(self.env)
-        url = env.url_players_list_search()
+        
+        url = ims.url_players_list_search()
 
-        _, get_token = self.login()
+        _, get_token = self.ims_login()
 
         headers = {
             'Host': 'ae-boapi.stgdevops.site',
@@ -100,15 +101,15 @@ class MemberList(Base):
             params.pop('createdtstart')
 
         r = self.s.get(url, headers=headers, params=params)
-        self.log.info(f'{str(r.json()).encode("utf-8").decode("cp950", "ignore")}')
+        log(f'{str(r.json()).encode("utf-8").decode("cp950", "ignore")}')
 
         return r.status_code, r.json()
 
     def players_list_lookup(self, username='welly'):
-        env = Url(self.env)
-        url = env.url_players_list_lookup()
+        
+        url = ims.url_players_list_lookup()
 
-        _, get_token = self.login()
+        _, get_token = self.ims_login()
         headers = {
             'Host': 'ae-boapi.stgdevops.site',
             'Connection': 'keep-alive',
@@ -128,14 +129,14 @@ class MemberList(Base):
             'q': username
         }
         r = self.s.get(url, headers=headers, params=params)
-        self.log.info(f'response: {r.json()}')
+        log(f'response: {r.json()}')
         return r.status_code, r.json()
 
     def players(self, username='welly', user_num=10):
-        env = Url(self.env)
-        url = env.url_players()
+        
+        url = ims.url_players()
 
-        _, get_token = self.login()
+        _, get_token = self.ims_login()
         headers = {
             'Host': 'ae-boapi.stgdevops.site',
             'Connection': 'keep-alive',
@@ -217,14 +218,14 @@ class MemberList(Base):
                 "verificationcode":None}
 
         r = self.s.post(url, headers=headers, json=data)
-        self.log.info(r.json())
+        log(r.json())
         return r.status_code, r.json()
 
     def players_playerid(self, username='welly'):
-        env = Url(self.env)
-        url = env.url_players_playerid(username)
+        
+        url = ims.url_players_playerid(username)
 
-        _, get_token = self.login()
+        _, get_token = self.ims_login()
         headers = {
             'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
             'Authorization': get_token['token'],
@@ -239,15 +240,15 @@ class MemberList(Base):
         }
 
         r = self.s.get(url, headers=headers)
-        self.log.info(r.json())
+        log(r.json())
 
         return r.status_code, r.json()
 
     def players_playerid_status(self, username='welly', status=1):
-        env = Url(self.env)
-        url = env.url_players_playerid_status(username)
+        
+        url = ims.url_players_playerid_status(username)
 
-        _, get_token = self.login()
+        _, get_token = self.ims_login()
 
         headers = {
             'Authorization': get_token['token'],
@@ -263,14 +264,14 @@ class MemberList(Base):
         }
 
         r = self.s.put(url, headers=headers, json=data)
-        self.log.info(f"PUT's status code: {r.status_code}")
+        log(f"PUT's status code: {r.status_code}")
         return r.status_code
 
     def players_playerid_notes(self, username='welly', notes=None, method='put'):
-        env = Url(self.env)
-        url = env.url_players_playerid_notes(username)
+        
+        url = ims.url_players_playerid_notes(username)
 
-        _, get_token = self.login()
+        _, get_token = self.ims_login()
 
         headers = {
             'Accept': '*/*',
@@ -300,7 +301,7 @@ class MemberList(Base):
             }
 
             r = self.s.get(url, headers=headers, params=data)
-            self.log.info(f"Status code: {r.status_code}")
+            log(f"Status code: {r.status_code}")
 
             return r.status_code, r.json()
 
@@ -310,7 +311,7 @@ class MemberList(Base):
             }
 
             r = self.s.put(url, headers=headers, json=data)
-            self.log.info(f"Status code: {r.status_code}")
+            log(f"Status code: {r.status_code}")
 
             return r.status_code
 
@@ -325,10 +326,10 @@ class MemberList(Base):
                             sortcolumn='txntime',
                             starttxnamt=None,
                             txntypes=5):
-        env = Url(self.env)
-        url = env.url_transactions_search()
+        
+        url = ims.url_transactions_search()
 
-        _, get_token = self.login()
+        _, get_token = self.ims_login()
 
         headers = {
             'Host': 'ae-boapi.stgdevops.site',
@@ -358,7 +359,7 @@ class MemberList(Base):
             # 'txntypes': '6',
         }
         r = self.s.get(url, headers=headers, params=params)
-        self.log.info(r.json())
+        log(r.json())
         return r.status_code, r.json()
 
     # 人工餘額調整txntypes=5是手動加錢, 6是扣錢
@@ -366,10 +367,10 @@ class MemberList(Base):
                        remarks='qq',
                        txnamt=100,
                        txntype='5'):
-        env = Url(self.env)
-        url = env.url_player_wallets()
+        
+        url = ims.url_player_wallets()
 
-        _, get_token = self.login()
+        _, get_token = self.ims_login()
 
         headers = {
             'Host': 'ae-boapi.stgdevops.site',
@@ -395,11 +396,5 @@ class MemberList(Base):
             'txntype': txntype,   # 5是加錢, 6是扣
         }
         r = self.s.put(url, headers=headers, json=data)
-        self.log.info(r.status_code)
+        log(r.status_code)
         return r.status_code
-
-
-if __name__ == '__main__':
-
-    player = PlayerResource('stg')
-    player.players_list_search()
