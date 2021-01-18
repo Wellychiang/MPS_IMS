@@ -48,9 +48,11 @@ def test_login_with_null_username_and_password(username='', pwd='', status=wrong
 @allure.story('Minus')
 @allure.step('')
 @pytest.mark.Login
-def test_login_with_null_and_error_username(usernames=('', '  ', '!@#', '我的天', str('w' * 60)), status=wrong_status):
+def test_login_with_null_and_error_username(usernames=('', '  ', '!@#', '我的天', str('w' * 60)),
+                                            pwd='',
+                                            status=wrong_status):
     for username in usernames:
-        status_code, response = player.ims_login(username)
+        status_code, response = player.ims_login_with_pwd(username, pwd)
         if username == usernames[0]:
             pytest.assume(status_code == status)
             pytest.assume(response['code'] == 0)
@@ -59,8 +61,8 @@ def test_login_with_null_and_error_username(usernames=('', '  ', '!@#', '我的�
 
         else:
             pytest.assume(status_code == status)
-            pytest.assume(response['code'] == 1)
-            pytest.assume(response['msg'] == 'userid or password is incorrect')
+            pytest.assume(response['code'] == 0)
+            pytest.assume(response['msg'] == 'password is not provided')
             pytest.assume(response['replace'] is replace_None)
 
 
@@ -71,7 +73,7 @@ def test_login_with_null_and_error_username(usernames=('', '  ', '!@#', '我的�
 def test_login_with_null_and_error_password(username='wellyadmin', pwds=('', '  ', '!@#', '我的天', str('w' * 60)),
                                             status=wrong_status):
     for pwd in pwds:
-        status_code, response = player.ims_login(username, pwd)
+        status_code, response = player.ims_login_with_pwd(username, pwd)
 
         if pwd == pwds[0]:
             pytest.assume(status_code == status)
@@ -626,12 +628,12 @@ def test_player_list_lookup_success(username='welly', status=right_status):
 @pytest.mark.Register
 def test_player_success(username='welly', user_num=24, status=right_status):
 
-    status_code, response = player.players(username, user_num)
+    status_code, response = player.add_player(username, user_num)
 
     while status_code == wrong_status:
         if response['msg'] == 'the specified playerid has already been taken':
             user_num += 1
-            status_code, response = player.players(username, user_num)
+            status_code, response = player.add_player(username, user_num)
         else:
             raise ValueError(f'Response msg: {response["msg"]}')
 

@@ -129,12 +129,12 @@ class MemberList(Base):
             'q': username
         }
         r = self.s.get(url, headers=headers, params=params)
-        log(f'response: {r.json()}')
+        log(f'Look up: {r.json()}')
         return r.status_code, r.json()
 
-    def players(self, username='welly', user_num=10):
+    def add_player(self, username='welly', user_num=''):
         
-        url = ims.url_players()
+        url = ims.url_add_player()
 
         _, get_token = self.ims_login()
         headers = {

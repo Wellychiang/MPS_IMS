@@ -2,6 +2,7 @@ import logging
 import requests
 from . import ims
 from . import log
+from config.user import User
 import time
 
 
@@ -13,8 +14,32 @@ class Base:
     def __init__(self, env='stg'):
         self.env = env
 
-    def ims_login(self, username='wellyadmin', pwd='64e89cab6f9b5560931d87399d916faf08e95c49'):
+    def ims_login_with_pwd(self, username, pwd):
         url = ims.url_login()
+
+        headers = {
+            'Host': 'ae-boapi.stgdevops.site',
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Origin': 'https://ae-bo.stgdevops.site',
+            'Referer': 'https://ae-bo.stgdevops.site/',
+        }
+
+        data = {
+            "userid": username,
+            "password": pwd
+        }
+
+        r = self.s.post(url, headers=headers, json=data, verify=False)
+        log(f'\nstatus: {r.status_code}\nresponse: {r.json()}')
+        return r.status_code, r.json()
+
+    def ims_login(self, username='wellyadmin', ):
+        url = ims.url_login()
+
+        user = User(username)
+        username = user.username()
+        pwd = user.pwd()
 
         headers = {
             'Host': 'ae-boapi.stgdevops.site',
