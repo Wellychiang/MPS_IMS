@@ -102,7 +102,7 @@ def test_player_list_search_success_with_fuzzy_search(playerid: 'fixedwade' = 'w
 
     # wade02斷言自己的, 其餘wade帳號皆用大多數同樣斷言
     # 兩個相同wade02不同: currency, firstname, vipid, totalavailable, viplevel, vipgroupid, levelname, totaldeposit,
-    # totaldepositcount, vgname, banksnameaccount,
+    # totaldepositcount, vgname, banksnameaccount, 去掉 totalavailable
 
     # 各不相同: mobile, createdate
     # skip: logintime
@@ -131,7 +131,6 @@ def test_player_list_search_success_with_fuzzy_search(playerid: 'fixedwade' = 'w
             pytest.assume(data['currency'] == 'CNY')
             pytest.assume(data['firstname'] == 'qweqww')
             pytest.assume(data['vipid'] == 'a582d64f-45e2-4769-94b3-2573b59279a3')
-            pytest.assume(data['totalavailable'] == 10017.88)
             pytest.assume(data['viplevel'] == 3)
             pytest.assume(data['vipgroupid'] == '252ffc0e-b40e-4e72-8c75-c92677947ae7')
             pytest.assume(data['levelname'] == '3')
@@ -157,7 +156,7 @@ def test_player_list_search_success_with_fuzzy_search(playerid: 'fixedwade' = 'w
         if data['playerid'] == 'wade01' or data['playerid'] == 'wade03':
             log(f'\nwade01 and wade03\n')
             pytest.assume(data['currency'] == 'USD')
-            pytest.assume(data['firstname'] is None)
+            pytest.assume(data['firstname'] == '')
             pytest.assume(data['vipid'] == '93f99682-37e9-4dbf-8805-f4061c37adae')
             pytest.assume(data['totalavailable'] == 0.0)
             pytest.assume(data['viplevel'] == 1)
