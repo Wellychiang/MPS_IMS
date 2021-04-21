@@ -431,7 +431,6 @@ def test_player_list_search_success_with_agentupline(playerid=None,
                                                            switch_create=False)
         log(f'exactmatch: {exactmatch}')
         pytest.assume(status_code == status)
-        pytest.assume(response['total'] == 1)
         pytest.assume(response['data'][0]['playerid'] == 'bcat02')
         pytest.assume(response['data'][0]['ulagentaccount'] == 'bluecat')
 
