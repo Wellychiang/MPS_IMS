@@ -9,7 +9,7 @@ import time
 
 
 @allure.feature("Scenario for shinjen button in team list")
-@pytest.mark.s
+@pytest.mark.skip('Wait')
 def test_shinjen_button(ssh_user="sshadd0000",
                         sh_user='shadd0000',
                         ssma_user='ssmaadd0000',
