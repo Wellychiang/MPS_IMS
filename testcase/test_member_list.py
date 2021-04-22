@@ -37,7 +37,7 @@ def test_login_success(username='wellyadmin', status=right_status):
 @pytest.mark.Login
 def test_login_with_null_username_and_password(username='', pwd='', status=wrong_status):
 
-    status_code, response = player.ims_login(username, pwd)
+    status_code, response = player.ims_login(username)
     pytest.assume(status_code == status)
     pytest.assume(response['code'] == 0)
     pytest.assume(response['msg'] == 'userid is not provided')
