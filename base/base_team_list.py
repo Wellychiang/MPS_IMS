@@ -24,21 +24,7 @@ class TeamList(Base):
 
         url = ims.url_add_member()
         _, token = self.ims_login(username)
-
-        headers = {
-            'accept': '*/*',
-            'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-            'authorization': token['token'],
-            'content-length': '275',
-            'content-type': 'application/json;charset=UTF-8',
-            'origin': 'https://ae-bo.stgdevops.site',
-            'referer': 'https://ae-bo.stgdevops.site/',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                          ' Chrome/87.0.4280.88 Safari/537.36',
-        }
+        headers = self.header(token)
         data = {
             'currency': currency,
             'firstName': firstName,
@@ -72,19 +58,7 @@ class TeamList(Base):
                      ):
         url = ims.url_ag_team_list()
         _, token = self.ims_login(username)
-
-        headers = {
-            'accept': '*/*',
-            'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-            'authorization': token['token'],
-            'origin': 'https://ae-bo.stgdevops.site',
-            'referer': 'https://ae-bo.stgdevops.site/',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/87.0.4280.88 Safari/537.36',
-        }
+        headers = self.header(token)
         params = {
             'status': status,
             'level': level,
@@ -103,19 +77,7 @@ class TeamList(Base):
     def get_level(self, username='wellyadmin', account=None):
         url = ims.url_get_level()
         _, token = self.ims_login(username)
-
-        headers = {
-            'accept': '*/*',
-            'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-            'authorization': token['token'],
-            'origin': 'https://ae-bo.stgdevops.site',
-            'referer': 'https://ae-bo.stgdevops.site/',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/87.0.4280.88 Safari/537.36',
-        }
+        headers = self.header(token)
         params = {
             'account': account
         }
@@ -148,22 +110,7 @@ class TeamList(Base):
                   ):
         url = ims.url_add_agent()
         _, token = self.ims_login(username)
-
-        headers = {
-            'accept': '*/*',
-            'accept-encoding': 'gzip, deflate, br',
-            'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-            'authorization': token['token'],
-            'content-length': '4739',
-            'content-type': 'application/json;charset=UTF-8',
-            'origin': 'https://ae-bo.stgdevops.site',
-            'referer': 'https://ae-bo.stgdevops.site/',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/87.0.4280.88 Safari/537.36',
-        }
+        headers = self.header(token)
         data = {
             'account': account,
             'commissionPct': commissionPct,
@@ -546,3 +493,49 @@ class TeamList(Base):
         log(f"Add agent: {r.json()}")
 
         return r.status_code, r.json()
+
+
+    def agentSite_login(self,
+                        username='add111',
+                        fp='1c640948924097806bca62dd5302134c',
+                        pwd='25cbe87f8d463aa17eb9a10cf08fc72c1618d89f'):
+        url = ims.url_agentSite_login()
+        headers = {
+                    'accept': '*/*',
+                    'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+                    'authorization': 'undefined',
+                    'content-length': '119',
+                    'content-type': 'application/json;charset=UTF-8',
+                    'origin': 'https://ae-ag.stgdevops.site',
+                    'referer': 'https://ae-ag.stgdevops.site/',
+                    'sec-fetch-dest': 'empty',
+                    'sec-fetch-mode': 'cors',
+                    'sec-fetch-site': 'same-site',
+                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                                  'Chrome/90.0.4430.85 Safari/537.36',
+
+        }
+        data = {'account': username,
+                'loginFp': fp,
+                'password': pwd}
+        r = self.s.post(url, headers=headers, json=data)
+        log(f'Agent site login: {r.status_code}')
+
+        return r.status_code
+
+    def agent_status_update(self,
+                            username='wellyadmin',
+                            ag_id=None,
+                            status='STATUS',
+                            value=None):
+        url = ims.url_update_ag_status(agent_id=ag_id)
+        _, token = self.ims_login(username)
+        headers = self.header(token)
+        data = {'field': status,
+                'value': value}
+        r = self.s.put(url, headers=headers, json=data)
+        if r.status_code != 204:
+            raise ValueError('Update agent status failed.')
+        log(f"Agent status update: {r.status_code}")
+
+        return r.status_code

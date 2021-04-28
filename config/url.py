@@ -19,12 +19,14 @@ class ImsUrl:
         player_wallets =    'playerwallets/'
         ulagent =           'ulagent/'
         players =           'players/'
+        ulagentSite =       'ulagentSite/'
 
         kick =              'kick'
         manualbalance =     'manualbalance'
         search =            'search/'
         player =            'player'
         list =              'list/'
+        login =             'login/'
 
         lookup = 'lookup'
         level = 'level'
@@ -41,6 +43,7 @@ class ImsUrl:
         self.add_member =           base + ulagent + player
         self.ag_team_list =         base + ulagent + search.strip('/')
         self.get_level =            base + ulagent + search + level
+        self.agentSite_login =      base + ulagentSite + login.strip('/')
 
 
     def url_login(self):
@@ -86,4 +89,9 @@ class ImsUrl:
     def url_add_agent(self):
         return self.add_agent
 
+    def url_agentSite_login(self):
+        return self.agentSite_login
+
+    def url_update_ag_status(self, agent_id):
+        return self.add_agent + str(agent_id) + '/update'
 

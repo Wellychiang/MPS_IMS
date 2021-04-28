@@ -41,21 +41,7 @@ class MemberList(Base):
         url = ims.url_players_list_search()
 
         _, get_token = self.ims_login()
-
-        headers = {
-            'Host': 'ae-boapi.stgdevops.site',
-            'Connection': 'keep-alive',
-            'Authorization': get_token['token'],
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/86.0.4240.111 Safari/537.36',
-            'Accept': '*/*',
-            'Origin': 'https://ae-bo.stgdevops.site',
-            'Sec-Fetch-Site': 'same-site',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Referer': 'https://ae-bo.stgdevops.site/',
-            'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-        }
+        headers = self.header(get_token)
 
         params = {
             'language': language,                       # int, default value: 2
@@ -101,7 +87,7 @@ class MemberList(Base):
             params.pop('createdtstart')
 
         r = self.s.get(url, headers=headers, params=params)
-        log(f'{str(r.json()).encode("utf-8").decode("cp950", "ignore")}')
+        log(f'Player list search: {str(r.json()).encode("utf-8").decode("cp950", "ignore")}')
 
         return r.status_code, r.json()
 
@@ -110,24 +96,12 @@ class MemberList(Base):
         url = ims.url_players_list_lookup()
 
         _, get_token = self.ims_login()
-        headers = {
-            'Host': 'ae-boapi.stgdevops.site',
-            'Connection': 'keep-alive',
-            'Authorization': get_token['token'],
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/86.0.4240.111 Safari/537.36',
-            'Accept': '*/*',
-            'Origin': 'https://ae-bo.stgdevops.site',
-            'Sec-Fetch-Site': 'same-site',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Referer': 'https://ae-bo.stgdevops.site/',
-            'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-        }
+        headers = self.header(get_token)
 
         params = {
             'q': username
         }
+
         r = self.s.get(url, headers=headers, params=params)
         log(f'Look up: {r.json()}')
         return r.status_code, r.json()
@@ -137,14 +111,7 @@ class MemberList(Base):
         url = ims.url_add_player()
 
         _, get_token = self.ims_login()
-        headers = {
-            'Host': 'ae-boapi.stgdevops.site',
-            'Connection': 'keep-alive',
-            'Authorization': get_token['token'],
-            'Content-Type': 'application/json;charset=UTF-8',
-            'Origin': 'https://ae-bo.stgdevops.site',
-            'Referer': 'https://ae-bo.stgdevops.site/',
-        }
+        headers = self.header(get_token)
 
         data = {"playerid": username + str(user_num),
                 "pin":None,
@@ -218,7 +185,7 @@ class MemberList(Base):
                 "verificationcode":None}
 
         r = self.s.post(url, headers=headers, json=data)
-        log(r.json())
+        log(f'Add_player: {r.json()}')
         return r.status_code, r.json()
 
     def players_playerid(self, username='welly'):
@@ -226,21 +193,10 @@ class MemberList(Base):
         url = ims.url_players_playerid(username)
 
         _, get_token = self.ims_login()
-        headers = {
-            'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Authorization': get_token['token'],
-            'Connection': 'keep-alive',
-            'Host': 'ae-boapi.stgdevops.site',
-            'Origin': 'https://ae-bo.stgdevops.site',
-            'Referer': 'https://ae-bo.stgdevops.site/',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-site',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
-        }
+        headers = self.header(get_token)
 
         r = self.s.get(url, headers=headers)
-        log(r.json())
+        log(f'Players playerid: {r.json()}')
 
         return r.status_code, r.json()
 
@@ -250,15 +206,7 @@ class MemberList(Base):
 
         _, get_token = self.ims_login()
 
-        headers = {
-            'Authorization': get_token['token'],
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/json;charset=UTF-8',
-            'Host': 'ae-boapi.stgdevops.site',
-            'Origin': 'https://ae-bo.stgdevops.site',
-            'Referer': 'https://ae-bo.stgdevops.site/',
-        }
-
+        headers = self.header(get_token)
         data = {
             'status': status
         }
@@ -272,23 +220,7 @@ class MemberList(Base):
         url = ims.url_players_playerid_notes(username)
 
         _, get_token = self.ims_login()
-
-        headers = {
-            'Accept': '*/*',
-            'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Authorization': get_token['token'],
-            'Connection': 'keep-alive',
-            # 'Content-Length': '21',
-            'Content-Type': 'application/json;charset=UTF-8',
-            'Host': 'ae-boapi.stgdevops.site',
-            'Origin': 'https://ae-bo.stgdevops.site',
-            'Referer': 'https://ae-bo.stgdevops.site/',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-site',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/86.0.4240.111 Safari/537.36',
-        }
+        headers = self.header(get_token)
 
         if method == 'get':
             headers.pop('Content-Type')
@@ -301,7 +233,7 @@ class MemberList(Base):
             }
 
             r = self.s.get(url, headers=headers, params=data)
-            log(f"Status code: {r.status_code}")
+            log(f"Player's note status code: {r.status_code}")
 
             return r.status_code, r.json()
 
@@ -311,7 +243,7 @@ class MemberList(Base):
             }
 
             r = self.s.put(url, headers=headers, json=data)
-            log(f"Status code: {r.status_code}")
+            log(f"Player's note status code: {r.status_code}")
 
             return r.status_code
 
@@ -330,21 +262,8 @@ class MemberList(Base):
         url = ims.url_transactions_search()
 
         _, get_token = self.ims_login()
+        headers = self.header(get_token)
 
-        headers = {
-            'Host': 'ae-boapi.stgdevops.site',
-            'Connection': 'keep-alive',
-            'Authorization': get_token['token'],
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/86.0.4240.111 Safari/537.36',
-            'Accept': '*/*',
-            'Origin': 'https://ae-bo.stgdevops.site',
-            'Sec-Fetch-Site': 'same-site',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Referer': 'https://ae-bo.stgdevops.site/',
-            'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-        }
         params = {
             'endtxnamt': endtxnamt,
             'endtxntime': endtxntime,
@@ -359,7 +278,7 @@ class MemberList(Base):
             # 'txntypes': '6',
         }
         r = self.s.get(url, headers=headers, params=params)
-        log(r.json())
+        log(f'Transaction search: {r.json()}')
         return r.status_code, r.json()
 
     # 人工餘額調整txntypes=5是手動加錢, 6是扣錢
@@ -371,23 +290,7 @@ class MemberList(Base):
         url = ims.url_player_wallets()
 
         _, get_token = self.ims_login()
-
-        headers = {
-            'Host': 'ae-boapi.stgdevops.site',
-            'Connection': 'keep-alive',
-            'Content-Length': '65',
-            'Authorization': get_token['token'],
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/86.0.4240.111 Safari/537.36',
-            'Content-Type': 'application/json;charset=UTF-8',
-            'Accept': '*/*',
-            'Origin': 'https://ae-bo.stgdevops.site',
-            'Sec-Fetch-Site': 'same-site',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Referer': 'https://ae-bo.stgdevops.site/',
-            'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-        }
+        headers = self.header(get_token)
 
         data = {
             'remarks': remarks,
@@ -396,5 +299,5 @@ class MemberList(Base):
             'txntype': txntype,   # 5是加錢, 6是扣
         }
         r = self.s.put(url, headers=headers, json=data)
-        log(r.status_code)
+        log(f'Players wallets: {r.status_code}')
         return r.status_code

@@ -10,7 +10,6 @@ class Base:
 
     s = requests.session()
 
-
     def __init__(self, env='stg'):
         self.env = env
 
@@ -73,4 +72,20 @@ class Base:
                 todays_end = time.mktime(strptime)
 
         return str(int(todays_start))+'000', str(int(todays_end))+'999'
+
+    def header(self, token):
+        headers = {
+                'accept': '*/*',
+                'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+                'authorization': token['token'],
+                'content-type': 'application/json;charset=UTF-8',
+                'origin': 'https://ae-bo.stgdevops.site',
+                'referer': 'https://ae-bo.stgdevops.site/',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-site',
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                              ' Chrome/87.0.4280.88 Safari/537.36',}
+        return headers
+
 

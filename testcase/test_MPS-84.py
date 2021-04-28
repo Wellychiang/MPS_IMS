@@ -6,10 +6,11 @@ from . import log
 from . import base
 from . import re
 import time
-import sys
 
 
 @allure.feature("Scenario for shinjen button in team list")
+@allure.step('')
+@pytest.mark.skip('Wait for DB because it waste too much time and server will response connection aborted.')
 def test_shinjen_button(ssh_user="sshadd0000",
                         sh_user='shadd0000',
                         ssma_user='ssmaadd0000',
@@ -18,7 +19,6 @@ def test_shinjen_button(ssh_user="sshadd0000",
                         ag_user='agadd0000',
                         playerId="add0000",
                         ):
-    sys.setrecursionlimit(5000)
     ssh_user, ssh_id = add_agent_and_return_agent_info(agentId=ssh_user, parentAccount=None, parentId=0, level=1)
     add_member(playerId, parentAccount=ssh_user, parentId=ssh_id)
     _, ssh_report = teamlist.ag_team_list(searchValue=ssh_user)
@@ -230,26 +230,37 @@ def get_parent_id(account):
     return id[0]
 
 
+# def new_player_with_not_repeat(playerId):
+#     _, players = player.players_list_lookup(username=playerId)
+#     if len(players) == 0:
+#         log(f'New playerId: {playerId}')
+#         return playerId
+#
+#     add_players_info = [data[3:8]
+#                         for data in players
+#                         if playerId in data]
+#
+#     if len(add_players_info) == 0:
+#         raise ValueError("Add player's info error, info shouldn't equal 0.")
+#
+#     playerId = re.sub('[0-9]', '', playerId)
+#     if int(max(add_players_info)) + 1 >= 10:
+#         next_new_player = playerId + '000' + str(int(max(add_players_info)) + 1)
+#     else:
+#         next_new_player = playerId + '0000' + str(int(max(add_players_info)) + 1)
+#
+#     return new_player_with_not_repeat(next_new_player)
+
 def new_player_with_not_repeat(playerId):
     _, players = player.players_list_lookup(username=playerId)
-    if len(players) == 0:
-        log(f'New playerId: {playerId}')
-        return playerId
+    num = 0
+    while len(players) != 0:
+        _, players = player.players_list_lookup(username=playerId)
+        num += 1
+        playerId = playerId[:7] + str(num)
 
-    add_players_info = [data[3:8]
-                        for data in players
-                        if playerId in data]
-
-    if len(add_players_info) == 0:
-        raise ValueError("Add player's info error, info shouldn't equal 0.")
-
-    playerId = re.sub('[0-9]', '', playerId)
-    if int(max(add_players_info)) + 1 >= 10:
-        next_new_player = playerId + '000' + str(int(max(add_players_info)) + 1)
-    else:
-        next_new_player = playerId + '0000' + str(int(max(add_players_info)) + 1)
-
-    return new_player_with_not_repeat(next_new_player)
+    log(f'New playerId: {playerId}')
+    return playerId
 
 
 @spend_time
@@ -270,6 +281,7 @@ def new_agent_with_not_repeat(agentId):
 
 
 def add_agent_and_return_agent_info(agentId, parentAccount, parentId, level):
+    global user
     try:
         user = new_agent_with_not_repeat(agentId=agentId)
         _, add_agent = teamlist.add_agent(account=user,
