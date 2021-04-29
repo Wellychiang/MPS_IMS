@@ -223,7 +223,7 @@ class MemberList(Base):
         headers = self.header(get_token)
 
         if method == 'get':
-            headers.pop('Content-Type')
+            # headers.pop('Content-Type')
 
             data = {
                 'limit': 16,
