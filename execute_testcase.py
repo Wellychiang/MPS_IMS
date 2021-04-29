@@ -2,8 +2,8 @@ import pytest
 
 
 if __name__ == '__main__':
-    # pytest.main(['-vvsm', 'd'])
+    pytest.main(['-vvsm', 'd'])
 
     # pytest.main(['-vvs'])
 
-    pytest.main(['-vvs', '--reruns', '1', '--alluredir', 'report'])   # 調試完記得開這行就好
+    # pytest.main(['-vvs', '--reruns', '1', '--alluredir', 'report'])   # 調試完記得開這行就好

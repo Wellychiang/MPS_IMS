@@ -8,13 +8,14 @@ from . import re
 import time
 
 
-@allure.feature('Scenario with change agent status and verify.')
+@allure.feature('Team list in agent team')
+@allure.story('Scenario with change agent status and verify.')
 @allure.step('')
-def test_verify_status(username='add111',
-                       values=(3, 1, 2),
-                       login_status=(498, 200, 498)):
+def test_verify_status_with_ag_team_list(username='add111',
+                                           values=(3, 1, 2),
+                                           login_status=(498, 200, 498)):
     """
-    Missing login user get kicked, it should be in gui mode
+    Missing login user get kicked verify, it should be in gui mode.
     """
     global user_id
     _, list_data = teamlist.ag_team_list(searchValue=username)

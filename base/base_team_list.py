@@ -534,8 +534,8 @@ class TeamList(Base):
         data = {'field': status,
                 'value': value}
         r = self.s.put(url, headers=headers, json=data)
+        log(f"Agent status update: {r.status_code}, value: {value}")
         if r.status_code != 204:
-            raise ValueError('Update agent status failed.')
-        log(f"Agent status update: {r.status_code}")
+            raise ValueError(f'Update agent status failed, failed value: {value}')
 
         return r.status_code

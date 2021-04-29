@@ -8,7 +8,8 @@ from . import re
 import time
 
 
-@allure.feature('Scenario with verify split page.')
+@allure.feature('Team list in agent team')
+@allure.story('Scenario with verify split page.')
 @allure.step('')
 def test_split_page(username='wellyadmin',
                     ):

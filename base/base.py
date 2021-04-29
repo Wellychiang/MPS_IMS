@@ -30,7 +30,7 @@ class Base:
         }
 
         r = self.s.post(url, headers=headers, json=data, verify=False)
-        log(f'\nstatus: {r.status_code}\nresponse: {r.json()}')
+        log(f'\nStatus: {r.status_code}, User: {username}\nIms login: {r.json()}')
         return r.status_code, r.json()
 
     def ims_login(self, username='wellyadmin', ):
@@ -54,7 +54,7 @@ class Base:
         }
 
         r = self.s.post(url, headers=headers, json=data, verify=False)
-        log(f'\nstatus: {r.status_code}\nresponse: {r.json()}')
+        log(f'\nStatus: {r.status_code}, User: {username}\nIms login: {r.json()}')
         return r.status_code, r.json()
 
     def start_and_end_time(self, start_m,
