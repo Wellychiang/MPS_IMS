@@ -27,9 +27,10 @@ class ImsUrl:
         player =            'player'
         list =              'list/'
         login =             'login/'
+        point =             'point/'
 
-        lookup = 'lookup'
-        level = 'level'
+        lookup =            'lookup'
+        level =             'level'
 
         self.status =               status
         self.notes =                notes
@@ -43,8 +44,8 @@ class ImsUrl:
         self.add_member =           base + ulagent + player
         self.ag_team_list =         base + ulagent + search.strip('/')
         self.get_level =            base + ulagent + search + level
+        self.ag_point =             base + ulagent + point.strip('/')
         self.agentSite_login =      base + ulagentSite + login.strip('/')
-
 
     def url_login(self):
         return self.login
@@ -95,3 +96,5 @@ class ImsUrl:
     def url_update_ag_status(self, agent_id):
         return self.add_agent + str(agent_id) + '/update'
 
+    def url_ag_point(self):
+        return self.ag_point

@@ -23,176 +23,176 @@ def test_shinjen_button(ssh_user="sshadd0000",
                         ):
     ssh_user, ssh_id = add_agent_and_return_agent_info(agentId=ssh_user, parentAccount=None, parentId=0, level=1)
     add_member(playerId, parentAccount=ssh_user, parentId=ssh_id)
-    _, ssh_report = teamlist.ag_team_list(searchValue=ssh_user)
-    verify_ag_team_list(ssh_report,
-                        id=ssh_id,
-                        account=ssh_user,
-                        directDownLineCount=0,
-                        downLinePlayerCount=1,
-                        parentId=0)
+    _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
+    verify_ag_team_list_search(ssh_report,
+                                id=ssh_id,
+                                account=ssh_user,
+                                directDownLineCount=0,
+                                downLinePlayerCount=1,
+                                parentId=0)
 
     sh_user, sh_id = add_agent_and_return_agent_info(agentId=sh_user, parentAccount=ssh_user, parentId=ssh_id, level=2)
     add_member(playerId, parentAccount=sh_user, parentId=sh_id)
-    _, ssh_report = teamlist.ag_team_list(searchValue=ssh_user)
-    _, sh_report = teamlist.ag_team_list(searchValue=sh_user)
-    verify_ag_team_list(ssh_report,
-                        id=ssh_id,
-                        account=ssh_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=2,
-                        parentId=0)
-    verify_ag_team_list(sh_report,
-                        id=sh_id,
-                        account=sh_user,
-                        directDownLineCount=0,
-                        downLinePlayerCount=1,
-                        parentId=ssh_id)
+    _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
+    _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
+    verify_ag_team_list_search(ssh_report,
+                                id=ssh_id,
+                                account=ssh_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=2,
+                                parentId=0)
+    verify_ag_team_list_search(sh_report,
+                                id=sh_id,
+                                account=sh_user,
+                                directDownLineCount=0,
+                                downLinePlayerCount=1,
+                                parentId=ssh_id)
 
     ssma_user, ssma_id = add_agent_and_return_agent_info(agentId=ssma_user, parentAccount=sh_user, parentId=sh_id, level=3)
     add_member(playerId, parentAccount=ssma_user, parentId=ssma_id)
-    _, ssh_report = teamlist.ag_team_list(searchValue=ssh_user)
-    _, sh_report = teamlist.ag_team_list(searchValue=sh_user)
-    _, ssma_report = teamlist.ag_team_list(searchValue=ssma_user)
-    verify_ag_team_list(ssh_report,
-                        id=ssh_id,
-                        account=ssh_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=3,
-                        parentId=0)
-    verify_ag_team_list(sh_report,
-                        id=sh_id,
-                        account=sh_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=2,
-                        parentId=ssh_id)
-    verify_ag_team_list(ssma_report,
-                        id=ssma_id,
-                        account=ssma_user,
-                        directDownLineCount=0,
-                        downLinePlayerCount=1,
-                        parentId=sh_id)
+    _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
+    _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
+    _, ssma_report = teamlist.ag_team_list_search(searchValue=ssma_user)
+    verify_ag_team_list_search(ssh_report,
+                                id=ssh_id,
+                                account=ssh_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=3,
+                                parentId=0)
+    verify_ag_team_list_search(sh_report,
+                                id=sh_id,
+                                account=sh_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=2,
+                                parentId=ssh_id)
+    verify_ag_team_list_search(ssma_report,
+                                id=ssma_id,
+                                account=ssma_user,
+                                directDownLineCount=0,
+                                downLinePlayerCount=1,
+                                parentId=sh_id)
 
     sma_user, sma_id = add_agent_and_return_agent_info(agentId=sma_user, parentAccount=ssma_user, parentId=ssma_id, level=4)
     add_member(playerId, parentAccount=sma_user, parentId=sma_id)
-    _, ssh_report = teamlist.ag_team_list(searchValue=ssh_user)
-    _, sh_report = teamlist.ag_team_list(searchValue=sh_user)
-    _, ssma_report = teamlist.ag_team_list(searchValue=ssma_user)
-    _, sma_report = teamlist.ag_team_list(searchValue=sma_user)
-    verify_ag_team_list(ssh_report,
-                        id=ssh_id,
-                        account=ssh_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=4,
-                        parentId=0)
-    verify_ag_team_list(sh_report,
-                        id=sh_id,
-                        account=sh_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=3,
-                        parentId=ssh_id)
-    verify_ag_team_list(ssma_report,
-                        id=ssma_id,
-                        account=ssma_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=2,
-                        parentId=sh_id)
-    verify_ag_team_list(sma_report,
-                        id=sma_id,
-                        account=sma_user,
-                        directDownLineCount=0,
-                        downLinePlayerCount=1,
-                        parentId=ssma_id)
+    _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
+    _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
+    _, ssma_report = teamlist.ag_team_list_search(searchValue=ssma_user)
+    _, sma_report = teamlist.ag_team_list_search(searchValue=sma_user)
+    verify_ag_team_list_search(ssh_report,
+                                id=ssh_id,
+                                account=ssh_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=4,
+                                parentId=0)
+    verify_ag_team_list_search(sh_report,
+                                id=sh_id,
+                                account=sh_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=3,
+                                parentId=ssh_id)
+    verify_ag_team_list_search(ssma_report,
+                                id=ssma_id,
+                                account=ssma_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=2,
+                                parentId=sh_id)
+    verify_ag_team_list_search(sma_report,
+                                id=sma_id,
+                                account=sma_user,
+                                directDownLineCount=0,
+                                downLinePlayerCount=1,
+                                parentId=ssma_id)
     ma_user, ma_id = add_agent_and_return_agent_info(agentId=ma_user, parentAccount=sma_user, parentId=sma_id, level=5)
     add_member(playerId, parentAccount=ma_user, parentId=ma_id)
-    _, ssh_report = teamlist.ag_team_list(searchValue=ssh_user)
-    _, sh_report = teamlist.ag_team_list(searchValue=sh_user)
-    _, ssma_report = teamlist.ag_team_list(searchValue=ssma_user)
-    _, sma_report = teamlist.ag_team_list(searchValue=sma_user)
-    _, ma_report = teamlist.ag_team_list(searchValue=ma_user)
-    verify_ag_team_list(ssh_report,
-                        id=ssh_id,
-                        account=ssh_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=5,
-                        parentId=0)
-    verify_ag_team_list(sh_report,
-                        id=sh_id,
-                        account=sh_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=4,
-                        parentId=ssh_id)
-    verify_ag_team_list(ssma_report,
-                        id=ssma_id,
-                        account=ssma_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=3,
-                        parentId=sh_id)
-    verify_ag_team_list(sma_report,
-                        id=sma_id,
-                        account=sma_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=2,
-                        parentId=ssma_id)
-    verify_ag_team_list(ma_report,
-                        id=ma_id,
-                        account=ma_user,
-                        directDownLineCount=0,
-                        downLinePlayerCount=1,
-                        parentId=sma_id)
+    _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
+    _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
+    _, ssma_report = teamlist.ag_team_list_search(searchValue=ssma_user)
+    _, sma_report = teamlist.ag_team_list_search(searchValue=sma_user)
+    _, ma_report = teamlist.ag_team_list_search(searchValue=ma_user)
+    verify_ag_team_list_search(ssh_report,
+                                id=ssh_id,
+                                account=ssh_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=5,
+                                parentId=0)
+    verify_ag_team_list_search(sh_report,
+                                id=sh_id,
+                                account=sh_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=4,
+                                parentId=ssh_id)
+    verify_ag_team_list_search(ssma_report,
+                                id=ssma_id,
+                                account=ssma_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=3,
+                                parentId=sh_id)
+    verify_ag_team_list_search(sma_report,
+                                id=sma_id,
+                                account=sma_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=2,
+                                parentId=ssma_id)
+    verify_ag_team_list_search(ma_report,
+                                id=ma_id,
+                                account=ma_user,
+                                directDownLineCount=0,
+                                downLinePlayerCount=1,
+                                parentId=sma_id)
 
     ag_user, ag_id = add_agent_and_return_agent_info(agentId=ag_user, parentAccount=ma_user, parentId=ma_id, level=5)
     add_member(playerId, parentAccount=ag_user, parentId=ag_id)
 
-    _, ssh_report = teamlist.ag_team_list(searchValue=ssh_user)
-    _, sh_report = teamlist.ag_team_list(searchValue=sh_user)
-    _, ssma_report = teamlist.ag_team_list(searchValue=ssma_user)
-    _, sma_report = teamlist.ag_team_list(searchValue=sma_user)
-    _, ma_report = teamlist.ag_team_list(searchValue=ma_user)
-    _, ag_report = teamlist.ag_team_list(searchValue=ag_user)
-    verify_ag_team_list(ssh_report,
-                        id=ssh_id,
-                        account=ssh_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=6,
-                        parentId=0)
-    verify_ag_team_list(sh_report,
-                        id=sh_id,
-                        account=sh_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=5,
-                        parentId=ssh_id)
-    verify_ag_team_list(ssma_report,
-                        id=ssma_id,
-                        account=ssma_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=4,
-                        parentId=sh_id)
-    verify_ag_team_list(sma_report,
-                        id=sma_id,
-                        account=sma_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=3,
-                        parentId=ssma_id)
-    verify_ag_team_list(ma_report,
-                        id=ma_id,
-                        account=ma_user,
-                        directDownLineCount=1,
-                        downLinePlayerCount=2,
-                        parentId=sma_id)
-    verify_ag_team_list(ag_report,
-                        id=ag_id,
-                        account=ag_user,
-                        directDownLineCount=0,
-                        downLinePlayerCount=1,
-                        parentId=ma_id)
+    _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
+    _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
+    _, ssma_report = teamlist.ag_team_list_search(searchValue=ssma_user)
+    _, sma_report = teamlist.ag_team_list_search(searchValue=sma_user)
+    _, ma_report = teamlist.ag_team_list_search(searchValue=ma_user)
+    _, ag_report = teamlist.ag_team_list_search(searchValue=ag_user)
+    verify_ag_team_list_search(ssh_report,
+                                id=ssh_id,
+                                account=ssh_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=6,
+                                parentId=0)
+    verify_ag_team_list_search(sh_report,
+                                id=sh_id,
+                                account=sh_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=5,
+                                parentId=ssh_id)
+    verify_ag_team_list_search(ssma_report,
+                                id=ssma_id,
+                                account=ssma_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=4,
+                                parentId=sh_id)
+    verify_ag_team_list_search(sma_report,
+                                id=sma_id,
+                                account=sma_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=3,
+                                parentId=ssma_id)
+    verify_ag_team_list_search(ma_report,
+                                id=ma_id,
+                                account=ma_user,
+                                directDownLineCount=1,
+                                downLinePlayerCount=2,
+                                parentId=sma_id)
+    verify_ag_team_list_search(ag_report,
+                                id=ag_id,
+                                account=ag_user,
+                                directDownLineCount=0,
+                                downLinePlayerCount=1,
+                                parentId=ma_id)
 
 
-def verify_ag_team_list(report,
-                        id,
-                        account,
-                        directDownLineCount,
-                        downLinePlayerCount,
-                        parentId):
+def verify_ag_team_list_search(report,
+                                id,
+                                account,
+                                directDownLineCount,
+                                downLinePlayerCount,
+                                parentId):
 
     report = report['data'][0]
 
@@ -267,10 +267,10 @@ def new_player_with_not_repeat(playerId):
 
 @spend_time
 def new_agent_with_not_repeat(agentId):
-    _, ag_team_list = teamlist.ag_team_list(searchValue=agentId)
+    _, ag_team_list_search = teamlist.ag_team_list_search(searchValue=agentId)
 
     add_ag_info = [data['account'][-4:]
-                   for data in ag_team_list['data']
+                   for data in ag_team_list_search['data']
                    if agentId in data['account']]
 
     if len(add_ag_info) == 0:

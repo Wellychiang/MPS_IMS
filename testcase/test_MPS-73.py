@@ -18,7 +18,7 @@ def test_verify_status_with_ag_team_list(username='add111',
     Missing login user get kicked verify, it should be in gui mode.
     """
     global user_id
-    _, list_data = teamlist.ag_team_list(searchValue=username)
+    _, list_data = teamlist.ag_team_list_search(searchValue=username)
 
     lists_data = list_data['data']
     for list_data in lists_data:

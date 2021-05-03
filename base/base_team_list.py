@@ -45,17 +45,16 @@ class TeamList(Base):
 
         return r.status_code, r.json()
 
-    def ag_team_list(self,
-                     username='wellyadmin',
-                     status='0',
-                     level='0',
-                     searchValue='sh002',
-                     searchField='AGENT',
-                     sortColumn='ACCOUNT',
-                     sort='ASC',
-                     limit='25',
-                     offset='0',
-                     ):
+    def ag_team_list_search(self,
+                             username='wellyadmin',
+                             status='0',
+                             level='0',
+                             searchValue='sh002',
+                             searchField='AGENT',
+                             sortColumn='ACCOUNT',
+                             sort='ASC',
+                             limit='25',
+                             offset='0',):
         url = ims.url_ag_team_list()
         _, token = self.ims_login(username)
         headers = self.header(token)
@@ -539,3 +538,52 @@ class TeamList(Base):
             raise ValueError(f'Update agent status failed, failed value: {value}')
 
         return r.status_code
+
+
+    def agent_point(self,
+                    username='wellyadmin',
+                    point=None,
+                    txn_type='ADD' or 'SUBTRACT',
+                    down_line_id=465,
+                    method='PUT',
+                    upLineLevel=0,
+                    start=0,
+                    end=0,
+                    sortColumn='CREATE_TIME',
+                    sort='DESC',
+                    limit=25,
+                    offset=0,
+                    ):
+        url = ims.url_ag_point()
+        _, token = self.ims_login(username)
+        headers = self.header(token)
+
+        if method == 'PUT':
+            data = {'downLineId': down_line_id,
+                    'point': point,
+                    'txnType': txn_type}
+            r = self.s.put(url, headers=headers, json=data)
+            log(f'Agent point change status code: {r.status_code}')
+
+            if r.status_code != 204:
+                raise ValueError(f'Agent point change failed: {r.status_code}')
+            return r.status_code
+        elif method == 'GET':
+            params = {'upLineLevel': upLineLevel,
+                      'end': end,
+                      'start': start,
+                      'sortColumn': sortColumn,
+                      'sort': sort,
+                      'limit': limit,
+                      'offset': offset,
+                      'startTime': start,
+                      'endTime': end}
+            r = self.s.get(url, headers=headers, params=params)
+            log(f'Agent point report: {r.json()}, Status: {r.status_code}')
+
+            return r.status_code, r.json()
+
+        else:
+            raise KeyError('Method should be put or get.')
+
+
