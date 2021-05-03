@@ -6,23 +6,26 @@ from . import log
 from . import base
 from . import re
 import time
+import random
+import os
 
 
 @allure.feature('Team list in agent team')
 @allure.story('Scenario for shinjen button in team list')
 @allure.step('')
-@pytest.mark.skip('Wait for DB because it waste too much time and server will '
-                  'response connection aborted or stack overflow.')
-def test_shinjen_button(ssh_user="sshadd0000",
-                        sh_user='shadd0000',
-                        ssma_user='ssmaadd0000',
-                        sma_user='smaadd0000',
-                        ma_user='maadd0000',
-                        ag_user='agadd0000',
-                        playerId="add0000",
+@pytest.mark.d
+def test_shinjen_button(ssh="ssh",
+                        sh='sh',
+                        ssma='ssma',
+                        sma='sma',
+                        ma='ma',
+                        ag='ag',
                         ):
-    ssh_user, ssh_id = add_agent_and_return_agent_info(agentId=ssh_user, parentAccount=None, parentId=0, level=1)
-    add_member(playerId, parentAccount=ssh_user, parentId=ssh_id)
+    os.system('del -r player.txt')
+    os.system('del -r agent.txt')
+
+    ssh_user, ssh_id = add_agent_and_return_agent_info(level_name=ssh, parentAccount=None, parentId=0, level=1)
+    add_member(parentAccount=ssh_user, parentId=ssh_id)
     _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
     verify_ag_team_list_search(ssh_report,
                                 id=ssh_id,
@@ -31,8 +34,8 @@ def test_shinjen_button(ssh_user="sshadd0000",
                                 downLinePlayerCount=1,
                                 parentId=0)
 
-    sh_user, sh_id = add_agent_and_return_agent_info(agentId=sh_user, parentAccount=ssh_user, parentId=ssh_id, level=2)
-    add_member(playerId, parentAccount=sh_user, parentId=sh_id)
+    sh_user, sh_id = add_agent_and_return_agent_info(level_name=sh, parentAccount=ssh_user, parentId=ssh_id, level=2)
+    add_member(parentAccount=sh_user, parentId=sh_id)
     _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
     _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
     verify_ag_team_list_search(ssh_report,
@@ -48,8 +51,8 @@ def test_shinjen_button(ssh_user="sshadd0000",
                                 downLinePlayerCount=1,
                                 parentId=ssh_id)
 
-    ssma_user, ssma_id = add_agent_and_return_agent_info(agentId=ssma_user, parentAccount=sh_user, parentId=sh_id, level=3)
-    add_member(playerId, parentAccount=ssma_user, parentId=ssma_id)
+    ssma_user, ssma_id = add_agent_and_return_agent_info(level_name=ssma, parentAccount=sh_user, parentId=sh_id, level=3)
+    add_member(parentAccount=ssma_user, parentId=ssma_id)
     _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
     _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
     _, ssma_report = teamlist.ag_team_list_search(searchValue=ssma_user)
@@ -72,8 +75,8 @@ def test_shinjen_button(ssh_user="sshadd0000",
                                 downLinePlayerCount=1,
                                 parentId=sh_id)
 
-    sma_user, sma_id = add_agent_and_return_agent_info(agentId=sma_user, parentAccount=ssma_user, parentId=ssma_id, level=4)
-    add_member(playerId, parentAccount=sma_user, parentId=sma_id)
+    sma_user, sma_id = add_agent_and_return_agent_info(level_name=sma, parentAccount=ssma_user, parentId=ssma_id, level=4)
+    add_member(parentAccount=sma_user, parentId=sma_id)
     _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
     _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
     _, ssma_report = teamlist.ag_team_list_search(searchValue=ssma_user)
@@ -102,8 +105,8 @@ def test_shinjen_button(ssh_user="sshadd0000",
                                 directDownLineCount=0,
                                 downLinePlayerCount=1,
                                 parentId=ssma_id)
-    ma_user, ma_id = add_agent_and_return_agent_info(agentId=ma_user, parentAccount=sma_user, parentId=sma_id, level=5)
-    add_member(playerId, parentAccount=ma_user, parentId=ma_id)
+    ma_user, ma_id = add_agent_and_return_agent_info(level_name=ma, parentAccount=sma_user, parentId=sma_id, level=5)
+    add_member(parentAccount=ma_user, parentId=ma_id)
     _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
     _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
     _, ssma_report = teamlist.ag_team_list_search(searchValue=ssma_user)
@@ -140,8 +143,8 @@ def test_shinjen_button(ssh_user="sshadd0000",
                                 downLinePlayerCount=1,
                                 parentId=sma_id)
 
-    ag_user, ag_id = add_agent_and_return_agent_info(agentId=ag_user, parentAccount=ma_user, parentId=ma_id, level=5)
-    add_member(playerId, parentAccount=ag_user, parentId=ag_id)
+    ag_user, ag_id = add_agent_and_return_agent_info(level_name=ag, parentAccount=ma_user, parentId=ma_id, level=5)
+    add_member(parentAccount=ag_user, parentId=ag_id)
 
     _, ssh_report = teamlist.ag_team_list_search(searchValue=ssh_user)
     _, sh_report = teamlist.ag_team_list_search(searchValue=sh_user)
@@ -193,7 +196,7 @@ def verify_ag_team_list_search(report,
                                 directDownLineCount,
                                 downLinePlayerCount,
                                 parentId):
-
+    log('Verify ag team list search.')
     report = report['data'][0]
 
     pytest.assume(report['id'] == id)
@@ -232,60 +235,40 @@ def get_parent_id(account):
     return id[0]
 
 
-# def new_player_with_not_repeat(playerId):
-#     _, players = player.players_list_lookup(username=playerId)
-#     if len(players) == 0:
-#         log(f'New playerId: {playerId}')
-#         return playerId
-#
-#     add_players_info = [data[3:8]
-#                         for data in players
-#                         if playerId in data]
-#
-#     if len(add_players_info) == 0:
-#         raise ValueError("Add player's info error, info shouldn't equal 0.")
-#
-#     playerId = re.sub('[0-9]', '', playerId)
-#     if int(max(add_players_info)) + 1 >= 10:
-#         next_new_player = playerId + '000' + str(int(max(add_players_info)) + 1)
-#     else:
-#         next_new_player = playerId + '0000' + str(int(max(add_players_info)) + 1)
-#
-#     return new_player_with_not_repeat(next_new_player)
-
-def new_player_with_not_repeat(playerId):
-    _, players = player.players_list_lookup(username=playerId)
-    num = 0
+def new_player_with_not_repeat():
+    string = 'abcdefghujklmnopqrstuvwxyz1234567890'
+    new_user =  'add' + ''.join(random.sample(string, 10))
+    _, players = player.players_list_lookup(username=new_user)
     while len(players) != 0:
-        _, players = player.players_list_lookup(username=playerId)
-        num += 1
-        playerId = playerId[:7] + str(num)
+        _, players = player.players_list_lookup(username=new_user)
 
-    log(f'New playerId: {playerId}')
-    return playerId
+    with open('player.txt', 'a') as f:
+        print(new_user, file=f)
+
+    log(f'New player: {new_user}')
+    return new_user
 
 
 @spend_time
-def new_agent_with_not_repeat(agentId):
-    _, ag_team_list_search = teamlist.ag_team_list_search(searchValue=agentId)
+def new_agent_with_not_repeat(level_name):
+    string = 'abcdefghujklmnopqrstuvwxyz1234567890'
+    new_agent =  level_name + ''.join(random.sample(string, 12))
 
-    add_ag_info = [data['account'][-4:]
-                   for data in ag_team_list_search['data']
-                   if agentId in data['account']]
+    _, ag_team_list_search = teamlist.ag_team_list_search(searchValue=new_agent)
+    while ag_team_list_search['total'] != 0 and len(ag_team_list_search['data']) != 0:
+        _, ag_team_list_search = teamlist.ag_team_list_search(searchValue=new_agent)
 
-    if len(add_ag_info) == 0:
-        raise ValueError("Add agent's info error, info shouldn't equal 0.")
+    with open('agent.txt', 'a') as f:
+        print(new_agent, file=f)
 
-    next_new_ag = agentId + str(int(max(add_ag_info)) + 1)
-    log(f"New agent: {next_new_ag}")
-
-    return next_new_ag
+    log(f"New agent: {new_agent}")
+    return new_agent
 
 
-def add_agent_and_return_agent_info(agentId, parentAccount, parentId, level):
+def add_agent_and_return_agent_info(level_name, parentAccount, parentId, level):
     global user
     try:
-        user = new_agent_with_not_repeat(agentId=agentId)
+        user = new_agent_with_not_repeat(level_name=level_name)
         _, add_agent = teamlist.add_agent(account=user,
                                           parentAccount=parentAccount,
                                           parentId=parentId,
@@ -301,8 +284,8 @@ def add_agent_and_return_agent_info(agentId, parentAccount, parentId, level):
     return user, user_id
 
 
-def add_member(player_id, parentAccount, parentId):
-    new_player = new_player_with_not_repeat(player_id)
+def add_member(parentAccount, parentId):
+    new_player = new_player_with_not_repeat()
     try:
         teamlist.add_member(playerId=new_player, parentAccount=parentAccount, parentId=parentId)
     except ValueError as e:

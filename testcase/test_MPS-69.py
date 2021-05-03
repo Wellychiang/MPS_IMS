@@ -55,8 +55,7 @@ def verify_ags_all_levels_search(offsets):
 
     for k, v in all_level_dict.items():
         if v == 0:
-            log(f'All level items: {all_level_dict}')
-            raise ValueError('Can not search all levels.')
+            raise ValueError(f'Can not search all levels, all level items: {all_level_dict}')
         else:
             pass
     log(f'All level items: {all_level_dict}')
