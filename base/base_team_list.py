@@ -88,7 +88,7 @@ class TeamList(Base):
     def add_agent(self,
                   username='wellyadmin',
                   account="sshadd00001",
-                  commissionPct=0.5,
+                  commissionPct=0.4,    # 成本佔成
                   createFp="6bad4e7168527a1e7cebece584d447e6",
                   currency="CNY",
                   initGroupPointPermission=True,
@@ -497,7 +497,8 @@ class TeamList(Base):
     def agentSite_login(self,
                         username='add111',
                         fp='1c640948924097806bca62dd5302134c',
-                        pwd='25cbe87f8d463aa17eb9a10cf08fc72c1618d89f'):
+                        pwd='25cbe87f8d463aa17eb9a10cf08fc72c1618d89f'
+                        ):
         url = ims.url_agentSite_login()
         headers = {
                     'accept': '*/*',
@@ -526,7 +527,8 @@ class TeamList(Base):
                             username='wellyadmin',
                             ag_id=None,
                             status='STATUS',
-                            value=None):
+                            value=None
+                            ):
         url = ims.url_update_ag_status(agent_id=ag_id)
         _, token = self.ims_login(username)
         headers = self.header(token)

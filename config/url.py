@@ -10,6 +10,13 @@ class ImsUrl:
         
         self.login =    base + login
         self.ads =      base + ads
+
+        # User roles
+        user_roles = 'userroles/'
+
+        superadmin = 'Super%20Admin'
+
+        self.user_roles_setting = base + user_roles + superadmin
         
         # Player resource
 
@@ -98,3 +105,6 @@ class ImsUrl:
 
     def url_ag_point(self):
         return self.ag_point
+
+    def url_user_roles_setting(self):
+        return self.user_roles_setting

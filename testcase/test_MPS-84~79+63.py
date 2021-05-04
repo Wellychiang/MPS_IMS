@@ -11,9 +11,8 @@ import os
 
 
 @allure.feature('Team list in agent team')
-@allure.story('Scenario for shinjen button in team list')
+@allure.story("Scenario for include agent and member then verify in team list")
 @allure.step('')
-@pytest.mark.d
 def test_shinjen_button(ssh="ssh",
                         sh='sh',
                         ssma='ssma',

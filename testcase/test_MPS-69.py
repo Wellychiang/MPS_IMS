@@ -27,14 +27,14 @@ def test_search_function(username='ssh001',
 
 
 def verify_ags_username_search(username):
-    _, response = teamlist.ag_team_list(searchValue=username)
+    _, response = teamlist.ag_team_list_search(searchValue=username)
     lists_data = response['data']
     for list_data in lists_data:
         assert username in list_data['account']
 
 
 def verify_ags_updater_search(updater):
-    _, response = teamlist.ag_team_list(searchValue=updater, searchField='UPDATER')
+    _, response = teamlist.ag_team_list_search(searchValue=updater, searchField='UPDATER')
     lists_data = response['data']
     for list_data in lists_data:
         assert updater == list_data['updater']
@@ -46,7 +46,7 @@ def verify_ags_all_levels_search(offsets):
         all_level_dict.setdefault(level, 0)
 
     for page in offsets:
-        _, response = teamlist.ag_team_list(searchValue=None,
+        _, response = teamlist.ag_team_list_search(searchValue=None,
                                             limit=100,
                                             offset=page)
         lists_data = response['data']
@@ -62,7 +62,7 @@ def verify_ags_all_levels_search(offsets):
 
 
 def verify_ags_single_level_search(levell):
-    _, response = teamlist.ag_team_list(searchValue=None,
+    _, response = teamlist.ag_team_list_search(searchValue=None,
                                         limit=100,
                                         level=levell)
     log(f'Search level: {levell}')
@@ -77,7 +77,7 @@ def verify_ags_single_level_search(levell):
 
 def verify_ags_status_change_and_search(username):
     global user_id
-    _, list_data = teamlist.ag_team_list(searchValue=username)
+    _, list_data = teamlist.ag_team_list_search(searchValue=username)
 
     lists_data = list_data['data']
     for list_data in lists_data:
@@ -87,7 +87,7 @@ def verify_ags_status_change_and_search(username):
             raise ValueError('Search failed')
     for status in range(1, 4):
         teamlist.agent_status_update(ag_id=user_id, value=status)
-        _, response = teamlist.ag_team_list(searchValue=username, status=status)
+        _, response = teamlist.ag_team_list_search(searchValue=username, status=status)
         lists_data = response['data']
         if len(lists_data) == 0:
             raise ValueError(f'0 data in the this search, user: {username}, status: {status} ')
